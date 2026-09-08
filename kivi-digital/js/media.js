@@ -42,9 +42,9 @@ const MEDIA = {
   // Client logos shown above each testimonial. Paste a Cloudinary (or
   // any) image URL and it replaces the dashed placeholder automatically.
   testimonialLogos: {
-    itHub: "",
-    niwasa: "",
-    ranchiRise: "",
+    itHub: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg",
+    niwasa: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg",
+    ranchiRise: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg",
   },
 
   // Each process step (01–04) can take a short looping video for the
@@ -53,6 +53,8 @@ const MEDIA = {
     discover:   { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465911/CC.mp4", image: "" },
     strategize: { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465907/SEO.mp4", image: "" },
     create:     { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465909/GD.mp4", image: "" },
+    launch:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788863980/CC_202609081605.mp4", image: "" },
+    optimize:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788863979/CC_202609081608.mp4", image: "" },
     grow:       { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465908/SSM.mp4", image: "" },
   },
 
@@ -83,18 +85,21 @@ const MEDIA = {
 // need the more robust load->canplay->play sequence and respond to
 // user interaction), so this file only handles the static media below.
 function applyMedia() {
-  const setSrc = (selector, url, attr = "src") => {
-    if (!url) return;
-    document.querySelectorAll(selector).forEach((el) => {
-      if (attr === "background") {
-        el.style.backgroundImage = `url('${url}')`;
-        el.classList.add("has-media");
-      } else {
-        el.setAttribute(attr, url);
-        el.classList.add("has-media");
-      }
-    });
+  const setTestimonailLogo = (key, url) => {
+    if (!url)
+      return;
+
+    const el = document.querySelector(`[data-media='${key}']`);
+    if (!el)
+      return;
+
+    el.src = url;
+    el.closest('.testimonial-logo').classList.add('has-media');
   };
+
+  setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
+  setTestimonailLogo('testimonail-niwasa-logo', MEDIA.testimonialLogos.niwasa);
+  setTestimonailLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise)
 
   // Generic helper: a "thumb" container that can hold either a looping
   // <video> or a background image (used by process steps).
@@ -155,6 +160,8 @@ function applyMedia() {
   setThumbMedia("[data-media='process-discover']", "[data-media='process-discover-video']", MEDIA.process.discover);
   setThumbMedia("[data-media='process-strategize']", "[data-media='process-strategize-video']", MEDIA.process.strategize);
   setThumbMedia("[data-media='process-create']", "[data-media='process-create-video']", MEDIA.process.create);
+  setThumbMedia("[data-media='process-launch']", "setThumbMedia([data-media='process-launch']", "[data-media='process-launch-video'", MEDIA.process.launch);
+  setThumbMedia("[data-media='process-optimize']", "[data-media='process-optimize-video']", MEDIA.process.optimize);
   setThumbMedia("[data-media='process-grow']", "[data-media='process-grow-video']", MEDIA.process.grow);
 
   // CTA
