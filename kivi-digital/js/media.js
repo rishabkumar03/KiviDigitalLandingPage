@@ -16,7 +16,7 @@
 
 const MEDIA = {
   hero: {
-    video: "https://res.cloudinary.com/orpxplwd/video/upload/v1787679616/0825.mp4",
+    video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788955092/secondKiviWeb.mp4",
     poster: "",
   },
 
@@ -78,6 +78,47 @@ const MEDIA = {
   },
 };
 
+function initNavPill() {
+  const links = document.querySelectorAll('[data-nav-link]');
+  const pill = document.querySelector('[data-nav-pill]');
+  const container = document.querySelector('[data-nav-links]');
+  if (!links.length || !pill || !container || prefersReducedMotion()) return;
+
+  const stiffness = 350, damping = 26, mass = 1;
+  let current = { x: 0, w: 0 }, target = { x: 0, w: 0 }, vel = { x: 0, w: 0 };
+  let rafId = null;
+
+  function step(cur, tgt, v, dt) {
+    const accel = (-stiffness * (cur - tgt) - damping * v) / mass;
+    v += accel * dt;
+    cur += v * dt;
+    return [cur, v];
+  }
+
+  function tick() {
+    const dt = 1 / 60;
+    [current.x, vel.x] = step(current.x, target.x, vel.x, dt);
+    [current.w, vel.w] = step(current.w, target.w, vel.w, dt);
+    pill.style.transform = `translateX(${current.x}px)`;
+    pill.style.width = `${current.w}px`;
+    const settled = Math.abs(target.x - current.x) < 0.4 && Math.abs(target.w - current.w) < 0.4
+      && Math.abs(vel.x) < 0.4 && Math.abs(vel.w) < 0.4;
+    rafId = settled ? null : requestAnimationFrame(tick);
+  }
+
+  function moveTo(el) {
+    const linkRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    target.x = linkRect.left - containerRect.left;
+    target.w = linkRect.width;
+    pill.classList.add('is-active');
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+
+  links.forEach((link) => link.addEventListener('mouseenter', () => moveTo(link)));
+  container.addEventListener('mouseleave', () => pill.classList.remove('is-active'));
+}
+
 // Applies any URLs set above to the page. Elements without a matching
 // data-media attribute are left as the built-in placeholder design.
 // NOTE: the six WHAT WE DO videos, their photo slots, and the Journey/
@@ -85,21 +126,16 @@ const MEDIA = {
 // need the more robust load->canplay->play sequence and respond to
 // user interaction), so this file only handles the static media below.
 function applyMedia() {
-  const setTestimonailLogo = (key, url) => {
-    if (!url)
-      return;
-
+  const setTestimonialLogo = (key, url) => {
+    if (!url) return;
     const el = document.querySelector(`[data-media='${key}']`);
-    if (!el)
-      return;
-
+    if (!el) return;
     el.src = url;
     el.closest('.testimonial-logo').classList.add('has-media');
   };
-
   setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
-  setTestimonailLogo('testimonail-niwasa-logo', MEDIA.testimonialLogos.niwasa);
-  setTestimonailLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise)
+  setTestimonialLogo('testimonial-niwasa-logo', MEDIA.testimonialLogos.niwasa);
+  setTestimonialLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise);
 
   // Generic helper: a "thumb" container that can hold either a looping
   // <video> or a background image (used by process steps).
@@ -137,6 +173,7 @@ function applyMedia() {
       v.addEventListener("loadeddata", reveal, { once: true });
       v.addEventListener("error", () => {
         if (heroMedia) heroMedia.classList.remove("has-media");
+        console.error("Hero video failed to load:", MEDIA.hero.video, v.error);
       }, { once: true });
       v.load();
       v.play().then(reveal).catch(() => {});
