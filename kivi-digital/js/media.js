@@ -32,11 +32,11 @@ const MEDIA = {
   },
 
   work: {
-    itHub:      { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1786466098/ChatGPT_Image_Aug_11_2026_02_08_54_PM.png", logo: "" },
-    niwasa:     { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1786466117/ChatGPT_Image_Aug_11_2026_02_14_34_PM.png", logo: "" },
-    minePortal: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1786466107/ChatGPT_Image_Aug_11_2026_03_31_58_PM.png", logo: "" },
-    kiviDigital:{ image: "https://res.cloudinary.com/orpxplwd/image/upload/v1786466105/ChatGPT_Image_Aug_11_2026_05_39_27_PM.png", logo: "" },
-    ranchiRise: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1786468535/ChatGPT_Image_Aug_11_2026_03_42_02_PM.png", logo: "" },
+    itHub:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg", logo: "" },
+    niwasa:     { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg", logo: "" },
+    minePortal: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855408/minePortalWebLogo.jpg", logo: "" },
+    tejas:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855355/TejasWebLogo.jpg", logo: "" },
+    ranchiRise: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg", logo: "" },
   },
 
   // Client logos shown above each testimonial. Paste a Cloudinary (or
@@ -78,47 +78,6 @@ const MEDIA = {
   },
 };
 
-function initNavPill() {
-  const links = document.querySelectorAll('[data-nav-link]');
-  const pill = document.querySelector('[data-nav-pill]');
-  const container = document.querySelector('[data-nav-links]');
-  if (!links.length || !pill || !container || prefersReducedMotion()) return;
-
-  const stiffness = 350, damping = 26, mass = 1;
-  let current = { x: 0, w: 0 }, target = { x: 0, w: 0 }, vel = { x: 0, w: 0 };
-  let rafId = null;
-
-  function step(cur, tgt, v, dt) {
-    const accel = (-stiffness * (cur - tgt) - damping * v) / mass;
-    v += accel * dt;
-    cur += v * dt;
-    return [cur, v];
-  }
-
-  function tick() {
-    const dt = 1 / 60;
-    [current.x, vel.x] = step(current.x, target.x, vel.x, dt);
-    [current.w, vel.w] = step(current.w, target.w, vel.w, dt);
-    pill.style.transform = `translateX(${current.x}px)`;
-    pill.style.width = `${current.w}px`;
-    const settled = Math.abs(target.x - current.x) < 0.4 && Math.abs(target.w - current.w) < 0.4
-      && Math.abs(vel.x) < 0.4 && Math.abs(vel.w) < 0.4;
-    rafId = settled ? null : requestAnimationFrame(tick);
-  }
-
-  function moveTo(el) {
-    const linkRect = el.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    target.x = linkRect.left - containerRect.left;
-    target.w = linkRect.width;
-    pill.classList.add('is-active');
-    if (!rafId) rafId = requestAnimationFrame(tick);
-  }
-
-  links.forEach((link) => link.addEventListener('mouseenter', () => moveTo(link)));
-  container.addEventListener('mouseleave', () => pill.classList.remove('is-active'));
-}
-
 // Applies any URLs set above to the page. Elements without a matching
 // data-media attribute are left as the built-in placeholder design.
 // NOTE: the six WHAT WE DO videos, their photo slots, and the Journey/
@@ -136,6 +95,19 @@ function applyMedia() {
   setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
   setTestimonialLogo('testimonial-niwasa-logo', MEDIA.testimonialLogos.niwasa);
   setTestimonialLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise);
+
+  const setSrc = (selector, url, attr = "src") => {
+    if (!url) return;
+    document.querySelectorAll(selector).forEach((el) => {
+      if (attr === "background") {
+        el.style.backgroundImage = `url('${url}')`;
+        el.classList.add("has-media");
+      } else {
+        el.setAttribute(attr, url);
+        el.classList.add("has-media");
+      }
+    });
+  };
 
   // Generic helper: a "thumb" container that can hold either a looping
   // <video> or a background image (used by process steps).
@@ -185,7 +157,7 @@ function applyMedia() {
   setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");
   setSrc("[data-media='work-niwasa']", MEDIA.work.niwasa.image, "background");
   setSrc("[data-media='work-mine-portal']", MEDIA.work.minePortal.image, "background");
-  setSrc("[data-media='work-kivi']", MEDIA.work.kiviDigital.image, "background");
+  setSrc("[data-media='work-kivi']", MEDIA.work.tejas.image, "background");
   setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
 
   // Testimonial client logos
@@ -197,7 +169,7 @@ function applyMedia() {
   setThumbMedia("[data-media='process-discover']", "[data-media='process-discover-video']", MEDIA.process.discover);
   setThumbMedia("[data-media='process-strategize']", "[data-media='process-strategize-video']", MEDIA.process.strategize);
   setThumbMedia("[data-media='process-create']", "[data-media='process-create-video']", MEDIA.process.create);
-  setThumbMedia("[data-media='process-launch']", "setThumbMedia([data-media='process-launch']", "[data-media='process-launch-video'", MEDIA.process.launch);
+  setThumbMedia("[data-media='process-launch']", "[data-media='process-launch-video']", MEDIA.process.launch);
   setThumbMedia("[data-media='process-optimize']", "[data-media='process-optimize-video']", MEDIA.process.optimize);
   setThumbMedia("[data-media='process-grow']", "[data-media='process-grow-video']", MEDIA.process.grow);
 

@@ -7,6 +7,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   initIntro();
   initNavbar();
+  initNavPill();
+  initFlipCardsTouch();
+  initFlipCards();
   initMobileMenu();
   initHoverAnimText();
   initScrollReveals();
@@ -101,6 +104,85 @@ function initMobileMenu() {
     btn.setAttribute("aria-expanded", String(open));
   });
   panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+}
+
+function initNavPill() {
+  const links = document.querySelectorAll('[data-nav-link]');
+  const pill = document.querySelector('[data-nav-pill]');
+  const container = document.querySelector('[data-nav-links]');
+  if (!links.length || !pill || !container || prefersReducedMotion()) return;
+
+  const stiffness = 350, damping = 26, mass = 1;
+  let current = { x: 0, w: 0 }, target = { x: 0, w: 0 }, vel = { x: 0, w: 0 };
+  let rafId = null;
+
+  function step(cur, tgt, v, dt) {
+    const accel = (-stiffness * (cur - tgt) - damping * v) / mass;
+    v += accel * dt;
+    cur += v * dt;
+    return [cur, v];
+  }
+
+  function tick() {
+    const dt = 1 / 60;
+    [current.x, vel.x] = step(current.x, target.x, vel.x, dt);
+    [current.w, vel.w] = step(current.w, target.w, vel.w, dt);
+    pill.style.transform = `translateX(${current.x}px)`;
+    pill.style.width = `${current.w}px`;
+    const settled = Math.abs(target.x - current.x) < 0.4 && Math.abs(target.w - current.w) < 0.4
+      && Math.abs(vel.x) < 0.4 && Math.abs(vel.w) < 0.4;
+    rafId = settled ? null : requestAnimationFrame(tick);
+  }
+
+  function moveTo(el) {
+    const linkRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    target.x = linkRect.left - containerRect.left;
+    target.w = linkRect.width;
+    pill.classList.add('is-active');
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+
+  links.forEach((link) => link.addEventListener('mouseenter', () => moveTo(link)));
+  container.addEventListener('mouseleave', () => pill.classList.remove('is-active'));
+}
+
+function initFlipCardsTouch() {
+  document.querySelectorAll('.sec-services .wwd-item').forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if (window.matchMedia('(hover: hover)').matches) return;
+      e.preventDefault();
+      card.classList.toggle('is-flipped');
+    });
+  });
+}
+
+function initFlipCards() {
+  const cards = document.querySelectorAll('[data-wwd-flip]');
+  const reduced = prefersReducedMotion();
+  const canHover = window.matchMedia('(hover: hover)').matches;
+
+  cards.forEach((card) => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('is-flipped');
+    });
+
+    if (!canHover || reduced) return;
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      const maxTilt = 10;
+      card.style.setProperty('--tiltY', `${px * maxTilt}deg`);
+      card.style.setProperty('--tiltX', `${-py * maxTilt}deg`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.setProperty('--tiltY', '0deg');
+      card.style.setProperty('--tiltX', '0deg');
+    });
+  });
 }
 
 /* =========================================================
