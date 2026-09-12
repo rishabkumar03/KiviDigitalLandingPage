@@ -6,7 +6,7 @@
   --sage-primary: #000000;
   --sage: #000000;
   --sage-light: #7fad14;
-  --sage-soft: #b3ff00;
+  --sage-soft: #0c1001;
   --sage-pale: #eafce0;
   --sage-background: var(--sage);
   --cream-text: #ffffff;
@@ -42,7 +42,7 @@ body {
   background-color: #b3ff00;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.35) 1.15px, transparent 1.35px),
-    linear-gradient(135deg, #c2ff33 0%, #a3e800 100%);
+    linear-gradient(135deg, #495e1a 0%, #a3e800 100%);
   background-size: 24px 24px, cover;
   background-attachment: fixed;
   color: var(--cream-text);
