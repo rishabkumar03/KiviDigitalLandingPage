@@ -47,17 +47,6 @@ const MEDIA = {
     ranchiRise: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg",
   },
 
-  // Each process step (01–04) can take a short looping video for the
-  // circular media window, uploaded the same way as everything else above.
-  process: {
-    discover:   { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465911/CC.mp4", image: "" },
-    strategize: { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465907/SEO.mp4", image: "" },
-    create:     { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465909/GD.mp4", image: "" },
-    launch:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788863980/CC_202609081605.mp4", image: "" },
-    optimize:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788863979/CC_202609081608.mp4", image: "" },
-    grow:       { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465908/SSM.mp4", image: "" },
-  },
-
   cta: {
     laptop: "",
     phone: "",
@@ -84,13 +73,15 @@ const MEDIA = {
 // Road detail video are wired dynamically by js/main.js (they
 // need the more robust load->canplay->play sequence and respond to
 // user interaction), so this file only handles the static media below.
+// Process step icons are static Lottie animations set directly in
+// index.html and are not part of this media-swap system.
 function applyMedia() {
   const setTestimonialLogo = (key, url) => {
     if (!url) return;
     const el = document.querySelector(`[data-media='${key}']`);
     if (!el) return;
     el.src = url;
-    el.closest('.testimonial-logo').classList.add('has-media');
+    el.closest('.testimonial-avatar').classList.add('has-media');
   };
   setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
   setTestimonialLogo('testimonial-niwasa-logo', MEDIA.testimonialLogos.niwasa);
@@ -107,32 +98,6 @@ function applyMedia() {
         el.classList.add("has-media");
       }
     });
-  };
-
-  // Generic helper: a "thumb" container that can hold either a looping
-  // <video> or a background image (used by process steps).
-  const setThumbMedia = (containerSelector, videoSelector, cfg) => {
-    if (!cfg) return;
-    const container = document.querySelector(containerSelector);
-    if (cfg.video) {
-      const source = document.querySelector(`${videoSelector} source`);
-      const video = document.querySelector(videoSelector);
-      if (source) source.src = cfg.video;
-      if (video) {
-        const reveal = () => { if (container) container.classList.add("has-media"); };
-        video.addEventListener("loadeddata", reveal, { once: true });
-        video.addEventListener("error", () => {
-          if (container) container.classList.remove("has-media");
-        }, { once: true });
-        video.load();
-        video.play().then(reveal).catch(() => {});
-      }
-    } else if (cfg.image) {
-      if (container) {
-        container.style.backgroundImage = `url('${cfg.image}')`;
-        container.classList.add("has-media");
-      }
-    }
   };
 
   // Hero
@@ -160,18 +125,10 @@ function applyMedia() {
   setSrc("[data-media='work-kivi']", MEDIA.work.tejas.image, "background");
   setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
 
-  // Testimonial client logos
-  setSrc("[data-media='testimonial-it-hub-logo']", MEDIA.testimonialLogos.itHub, "background");
-  setSrc("[data-media='testimonial-niwasa-logo']", MEDIA.testimonialLogos.niwasa, "background");
-  setSrc("[data-media='testimonial-ranchi-rise-logo']", MEDIA.testimonialLogos.ranchiRise, "background");
+  // Testimonial client logos are handled above via setTestimonialLogo().
 
-  // Process
-  setThumbMedia("[data-media='process-discover']", "[data-media='process-discover-video']", MEDIA.process.discover);
-  setThumbMedia("[data-media='process-strategize']", "[data-media='process-strategize-video']", MEDIA.process.strategize);
-  setThumbMedia("[data-media='process-create']", "[data-media='process-create-video']", MEDIA.process.create);
-  setThumbMedia("[data-media='process-launch']", "[data-media='process-launch-video']", MEDIA.process.launch);
-  setThumbMedia("[data-media='process-optimize']", "[data-media='process-optimize-video']", MEDIA.process.optimize);
-  setThumbMedia("[data-media='process-grow']", "[data-media='process-grow-video']", MEDIA.process.grow);
+  // Process — icons are now static Lottie animations wired directly in
+  // index.html, so no runtime media wiring is needed here.
 
   // CTA
   setSrc("[data-media='cta-laptop']", MEDIA.cta.laptop, "background");
