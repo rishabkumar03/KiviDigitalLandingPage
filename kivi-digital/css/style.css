@@ -42,7 +42,7 @@ body {
   background-color: #b3ff00;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.35) 1.15px, transparent 1.35px),
-    linear-gradient(135deg, #495e1a 0%, #a3e800 100%);
+    linear-gradient(135deg, #111800 0%, #bcfe20 100%);
   background-size: 24px 24px, cover;
   background-attachment: fixed;
   color: var(--cream-text);
@@ -578,8 +578,8 @@ body.lightbox-locked { overflow: hidden; }
    TEAM — unchanged structure, navy-consistent
    ========================================================= */
 .sec-team { --accent: var(--sage-pale); }
-.team-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; flex-wrap: wrap; margin-bottom: 46px; position: relative; z-index: 1; }
-.team-heading .section-sub { margin-top: 8px; max-width: 320px; }
+.team-heading { max-width: 760px; margin-bottom: 46px; position: relative; z-index: 1; }
+.team-heading .section-sub { margin-top: 22px; max-width: 460px; }
 .team-heading code { background: rgba(246,241,228,.08); padding: 2px 6px; border-radius: 5px; font-size: 12px; }
 .team-scroller { display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; scrollbar-width: none; position: relative; z-index: 1; }
 .team-scroller::-webkit-scrollbar { display: none; }
@@ -1495,10 +1495,10 @@ body { color: var(--dark-text); }
   min-height: 260px;
   padding: 30px;
   border-radius: 24px;
-  background: rgba(255,255,255,.42);
-  border: 1px solid rgba(0,0,0,.18);
-  box-shadow: 0 18px 42px rgba(0,0,0,.10);
-  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease), background 260ms var(--ease);
+  background: #000;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 16px 36px rgba(0,0,0,.20);
+  transition: transform 260ms var(--ease), border-color 260ms var(--ease), box-shadow 260ms var(--ease);
 }
 .sec-testimonials .testimonial-card::before {
   content: "\201C";
@@ -1508,29 +1508,36 @@ body { color: var(--dark-text); }
   font-family: var(--font-display);
   font-size: 72px;
   line-height: 1;
-  color: rgba(0,0,0,.12);
+  color: rgba(255,255,255,.12);
 }
 .sec-testimonials .testimonial-card:hover {
-  transform: translateY(-7px);
-  background: rgba(255,255,255,.58);
-  box-shadow: 0 28px 64px rgba(0,0,0,.16);
+  transform: translateY(-8px);
+  border-color: rgba(127,173,20,.72);
+  background: #000;
+  box-shadow: 0 24px 50px rgba(0,0,0,.30);
 }
 .sec-testimonials .testimonial-stars {
   color: #FBBC04;
 }
 .sec-testimonials .testimonial-quote {
   flex: 1;
-  color: rgba(24,32,24,.78);
+  color: rgba(255,255,255,.78);
   font-size: 15px;
 }
 .sec-testimonials .testimonial-foot {
   padding-top: 18px;
-  border-top: 1px solid rgba(0,0,0,.14);
+  border-top: 1px solid rgba(255,255,255,.14);
+}
+.sec-testimonials .testimonial-name {
+  color: var(--cream-text);
+}
+.sec-testimonials .testimonial-role {
+  color: #7fad14;
 }
 .sec-testimonials .testimonial-avatar {
-  background: var(--sage-deep);
+  background: #111;
   color: var(--cream-text);
-  border: 2px solid rgba(255,255,255,.7);
+  border: 2px solid rgba(127,173,20,.5);
 }
 
 .sec-process .process-row {
@@ -1937,19 +1944,19 @@ body { color: var(--dark-text); }
   min-width: 0;
   width: 100%;
   padding: clamp(24px, 3vw, 34px) 18px 26px;
-  border: 1px solid rgba(0,0,0,.12);
+  border: 1px solid rgba(255,255,255,.16);
   border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 14px 34px rgba(24,32,24,.12);
+  background: #000;
+  box-shadow: 0 16px 36px rgba(0,0,0,.20);
   text-align: center;
   overflow: hidden;
   transform: none;
   transition: transform 240ms var(--ease), box-shadow 240ms var(--ease), border-color 240ms var(--ease);
 }
 .sec-team .team-card:hover {
-  transform: translateY(-7px);
-  border-color: rgba(0,0,0,.22);
-  box-shadow: 0 24px 54px rgba(24,32,24,.16);
+  transform: translateY(-8px);
+  border-color: rgba(127,173,20,.72);
+  box-shadow: 0 24px 50px rgba(0,0,0,.30);
 }
 .sec-team .team-photo,
 .sec-team .team-card:hover .team-photo,
@@ -1959,7 +1966,7 @@ body { color: var(--dark-text); }
   aspect-ratio: 1 / 1;
   border: 0;
   border-radius: 50%;
-  background-color: #eef2ee;
+  background-color: #111;
   background-size: cover;
   background-position: center;
   box-shadow: none;
@@ -1972,7 +1979,7 @@ body { color: var(--dark-text); }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0,0,0,.08), transparent 55%);
+  background: linear-gradient(135deg, rgba(255,255,255,.08), transparent 55%);
   pointer-events: none;
 }
 .sec-team .team-meta {
@@ -1982,7 +1989,7 @@ body { color: var(--dark-text); }
   padding-top: 22px;
 }
 .sec-team .team-meta strong {
-  color: #404040;
+  color: var(--cream-text);
   font-family: var(--font-display);
   font-size: clamp(.95rem, 1.3vw, 1.12rem);
   font-weight: 700;
@@ -1990,7 +1997,7 @@ body { color: var(--dark-text); }
   text-transform: uppercase;
 }
 .sec-team .team-meta span {
-  color: #62c5b7;
+  color: #7fad14;
   font-size: 12px;
   font-weight: 600;
 }
@@ -2360,27 +2367,27 @@ body { color: var(--dark-text); }
   justify-content: center;
   min-height: 54px;
   padding: 12px 14px;
-  border: 1px solid rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.16);
   border-radius: 999px;
-  background: rgba(255,255,255,.40);
-  color: var(--dark-text);
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
-  backdrop-filter: blur(8px);
+  background: #000;
+  color: var(--cream-text);
+  box-shadow: 0 10px 24px rgba(0,0,0,.20);
 }
 .sec-contact .contact-method:hover {
   color: var(--cream-text);
-  border-color: var(--sage-deep);
-  background: var(--sage-deep);
+  border-color: rgba(127,173,20,.72);
+  background: #000;
   transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(0,0,0,.28);
 }
 .sec-contact .contact-info-icon {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(0,0,0,.10);
+  background: rgba(255,255,255,.10);
 }
 .sec-contact .contact-method:hover .contact-info-icon {
-  background: rgba(255,255,255,.16);
+  background: rgba(127,173,20,.28);
 }
 .sec-contact .contact-grid {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -2391,36 +2398,52 @@ body { color: var(--dark-text); }
 .sec-contact .contact-form-card {
   min-height: 500px;
   border-radius: 28px;
-  background: rgba(255,255,255,.44);
-  border: 1px solid rgba(0,0,0,.16);
-  box-shadow: 0 24px 60px rgba(0,0,0,.12);
-  backdrop-filter: blur(10px);
+  background: #000;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 16px 36px rgba(0,0,0,.20);
+  transition: transform 260ms var(--ease), border-color 260ms var(--ease), box-shadow 260ms var(--ease);
+}
+.sec-contact .contact-illustration:hover {
+  transform: translateY(-8px);
+  border-color: rgba(127,173,20,.72);
+  box-shadow: 0 24px 50px rgba(0,0,0,.30);
+}
+.sec-contact .contact-form-card:hover {
+  border-color: rgba(127,173,20,.5);
 }
 .sec-contact .contact-illustration {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.sec-contact .cta-laptop {
-  left: 8%;
-  bottom: 24%;
-  width: min(66%, 430px);
+.sec-contact .cta-mascot {
+  position: relative;
+  z-index: 1;
+  width: min(72%, 320px);
+  height: auto;
+  filter: drop-shadow(0 22px 34px rgba(0,0,0,.55));
+  animation: mascot-float 4.5s ease-in-out infinite;
 }
-.sec-contact .cta-phone {
-  right: 8%;
-  bottom: 18%;
-  width: clamp(78px, 8vw, 104px);
-  height: clamp(156px, 17vw, 208px);
+@keyframes mascot-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.sec-contact .cta-deco.d1,
+.sec-contact .cta-deco.d3 {
+  background: var(--lime);
 }
 .sec-contact .contact-form-card {
   padding: clamp(28px, 4vw, 44px);
+}
+.sec-contact .field label {
+  color: #7fad14;
 }
 .sec-contact .field input,
 .sec-contact .field select,
 .sec-contact .field textarea {
   min-height: 48px;
   border-radius: 12px;
-  background: rgba(255,255,255,.88);
+  background: rgba(255,255,255,.92);
 }
 .sec-contact .field textarea {
   min-height: 126px;
@@ -2695,9 +2718,9 @@ body { color: var(--dark-text); }
   align-items: center;
   justify-content: center;
   border-radius: 28px;
-  background: rgba(255,255,255,.44);
-  border: 1px solid rgba(0,0,0,.16);
-  box-shadow: 0 24px 60px rgba(0,0,0,.12);
+  background: #000;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 16px 36px rgba(0,0,0,.20);
   overflow: hidden;
 }
 

@@ -57,13 +57,14 @@ const MEDIA = {
   // Cloudinary (or any) image URL for each member and it swaps in
   // automatically, replacing the "Add photo" placeholder card.
   team: {
-    member1: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787511647/ChatGPT_Image_Aug_19_2026_11_23_23_PM.png", name: "Animesh Kumar", role: "Team Leader" },
-    member2: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076774/mitali.jpg", name: "Mitali", role: "Content Creator/Manager" },
-    member3: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076795/saksham.jpg", name: "Saksham", role: "Video Editor" },
-    member4: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076796/Hassan.jpg", name: "Kamil Hassan", role: "Performance Analyst" },
-    member5: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076796/gaurav.jpg", name: "Gaurav", role: "Faculty member" },
-    member6: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076797/priyanshu.jpg", name: "Priyanshu", role: "Team coordinator" },
-    member7: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787077340/ChatGPT_Image_Aug_18_2026_11_51_05_PM.png", name: "Jyoti", role: "Web Designer/video Editor" },
+    member1: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789372262/WhatsApp_Image_2026-09-14_at_12.50.44_PM.jpg", name: "Animesh Kumar", role: "Founder & CEO" },
+    member2: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076774/mitali.jpg", name: "Mittaly", role: "Content Creator & Manager" },
+    member3: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789368734/rishabLinkedInPhoto.jpg", name: "Rishab", role: "Full-Stack Developer" },
+    member4: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787077340/ChatGPT_Image_Aug_18_2026_11_51_05_PM.png", name: "Jyoti", role: "Web Designer & Video Editor" },
+    member5: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789369916/WhatsApp_Image_2026-09-14_at_12.35.39_PM.jpg", name: "Sagar", role: "Video Editor" },
+    member6: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789370034/WhatsApp_Image_2026-09-14_at_12.39.12_PM.jpg", name: "Nikhil", role: "Video Editor" },
+    member7: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789372002/gaurav.jpg", name: "Gaurav", role: "Faculty member" },
+    member8: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076797/priyanshu.jpg", name: "Priyanshu", role: "Team coordinator" },
   },
 };
 
@@ -152,6 +153,7 @@ function applyMedia() {
   setTeamPhoto("team-05", MEDIA.team.member5);
   setTeamPhoto("team-06", MEDIA.team.member6);
   setTeamPhoto("team-07", MEDIA.team.member7);
+  setTeamPhoto("team-08", MEDIA.team.member8);
 
   document.querySelectorAll("[data-team-card]").forEach((card, index) => {
     const cfg = MEDIA.team[`member${index + 1}`];
