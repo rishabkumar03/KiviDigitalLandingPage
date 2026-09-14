@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initServiceGraphs();
   initLightbox();
   initContactForm();
+  initEyeFollowButtons();
 });
 
 /* =========================================================
@@ -58,7 +59,7 @@ function playHeroReveal() {
   const mediaPanel = document.querySelector(".hero-panel--media");
   if (typeof gsap === "undefined") {
     if (logo) { logo.style.opacity = 1; logo.style.transform = "none"; }
-    document.querySelectorAll(".sec-hero .reveal, [data-hero-title] .reveal-mask span").forEach((el) => {
+    document.querySelectorAll(".sec-hero .reveal, [data-hero-title] .reveal-mask > span").forEach((el) => {
       el.style.opacity = 1; el.style.transform = "none";
     });
     return;
@@ -73,7 +74,7 @@ function playHeroReveal() {
   if (logo) {
     tl.to(logo, { opacity: 1, y: 0, duration: .7 }, "-=.45");
   }
-  tl.to("[data-hero-title] .reveal-mask span", {
+  tl.to("[data-hero-title] .reveal-mask > span", {
     y: 0, duration: .9, stagger: .09,
   }, "-=.35");
   tl.to(".sec-hero .reveal", {
@@ -605,3 +606,168 @@ function initContactForm() {
     });
   });
 }
+
+/* =========================================================
+   EYE FOLLOW BUTTON COMPONENT
+   Playful, highly interactive UI component with animated eyes
+   whose pupils smoothly follow the user's cursor in real time.
+   Supports full customization: link, colors, padding, radius,
+   eye count, eye & pupil size, gap, speed, range, and blinking.
+   ========================================================= */
+function initEyeFollowButtons() {
+  const buttons = document.querySelectorAll("[data-eye-btn]");
+  if (!buttons.length) return;
+
+  const instances = [];
+
+  buttons.forEach((btn) => {
+    // Read customizable properties with intelligent defaults
+    const link = btn.dataset.link || btn.getAttribute("href") || "";
+    const btnColor = btn.dataset.btnColor || "";
+    const text = btn.dataset.text || "";
+    const textColor = btn.dataset.textColor || "";
+    const padding = btn.dataset.padding || "";
+    const radius = btn.dataset.radius || "";
+    const eyeColor = btn.dataset.eyeColor || "#ffffff";
+    const pupilColor = btn.dataset.pupilColor || "#060c02";
+    const eyeCount = parseInt(btn.dataset.eyeCount || "2", 10);
+    const eyeSize = btn.dataset.eyeSize ? parseFloat(btn.dataset.eyeSize) : null;
+    const pupilSize = btn.dataset.pupilSize ? parseFloat(btn.dataset.pupilSize) : null;
+    const eyeGap = btn.dataset.eyeGap ? parseFloat(btn.dataset.eyeGap) : null;
+    const speed = parseFloat(btn.dataset.speed || "0.18");
+    const range = parseFloat(btn.dataset.range || "7");
+    const blinking = btn.dataset.blinking !== "false";
+    const blinkIntensity = parseFloat(btn.dataset.blinkIntensity || "1");
+
+    // Apply inline style properties if configured
+    if (btnColor) btn.style.setProperty("--btn-color", btnColor);
+    if (textColor) btn.style.setProperty("--text-color", textColor);
+    if (padding) btn.style.setProperty("--btn-padding", padding);
+    if (radius) btn.style.setProperty("--btn-radius", radius);
+    if (eyeColor) btn.style.setProperty("--eye-color", eyeColor);
+    if (pupilColor) btn.style.setProperty("--pupil-color", pupilColor);
+    if (eyeSize) btn.style.setProperty("--eye-size", `${eyeSize}px`);
+    if (pupilSize) btn.style.setProperty("--pupil-size", `${pupilSize}px`);
+    if (eyeGap) btn.style.setProperty("--eye-gap", `${eyeGap}px`);
+
+    // Ensure link action
+    if (link && !btn.getAttribute("href")) {
+      btn.setAttribute("href", link);
+    }
+    // Smooth scroll for internal links
+    btn.addEventListener("click", (e) => {
+      const targetHref = btn.getAttribute("href") || link;
+      if (targetHref && targetHref.startsWith("#")) {
+        const targetEl = document.querySelector(targetHref);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    });
+
+    // Ensure eye container exists
+    let eyesContainer = btn.querySelector(".eye-btn-eyes");
+    if (!eyesContainer) {
+      eyesContainer = document.createElement("span");
+      eyesContainer.className = "eye-btn-eyes";
+      eyesContainer.setAttribute("aria-hidden", "true");
+      btn.appendChild(eyesContainer);
+    }
+
+    // Build eyes if needed
+    if (eyesContainer.children.length === 0) {
+      for (let i = 0; i < eyeCount; i++) {
+        const eyeEl = document.createElement("span");
+        eyeEl.className = "eye-btn-eye";
+        const pupilEl = document.createElement("span");
+        pupilEl.className = "eye-btn-pupil";
+        eyeEl.appendChild(pupilEl);
+        eyesContainer.appendChild(eyeEl);
+      }
+    }
+
+    const eyeObjects = Array.from(eyesContainer.querySelectorAll(".eye-btn-eye")).map((eyeEl) => ({
+      el: eyeEl,
+      pupil: eyeEl.querySelector(".eye-btn-pupil"),
+      curX: 0,
+      curY: 0,
+      targetX: 0,
+      targetY: 0,
+    }));
+
+    // Natural randomized blinking schedule
+    if (blinking) {
+      const scheduleBlink = () => {
+        const delay = (3 + Math.random() * 3.5) * 1000;
+        setTimeout(() => {
+          eyeObjects.forEach((eye) => {
+            eye.el.classList.add("is-blinking");
+            eye.el.style.animationDuration = `${160 * blinkIntensity}ms`;
+          });
+          setTimeout(() => {
+            eyeObjects.forEach((eye) => eye.el.classList.remove("is-blinking"));
+            scheduleBlink();
+          }, 180 * blinkIntensity);
+        }, delay);
+      };
+      scheduleBlink();
+    }
+
+    instances.push({ btn, eyes: eyeObjects, speed, range });
+  });
+
+  // Track cursor position globally
+  let pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
+
+  window.addEventListener("pointermove", (e) => {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.active = true;
+  }, { passive: true });
+
+  window.addEventListener("pointerleave", () => {
+    pointer.active = false;
+  });
+
+  // Silky 60/120fps tick loop using smooth interpolation (lerp)
+  function render() {
+    instances.forEach(({ eyes, speed, range }) => {
+      eyes.forEach((eye) => {
+        if (pointer.active) {
+          const rect = eye.el.getBoundingClientRect();
+          const eyeCenterX = rect.left + rect.width / 2;
+          const eyeCenterY = rect.top + rect.height / 2;
+
+          const dx = pointer.x - eyeCenterX;
+          const dy = pointer.y - eyeCenterY;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist > 0) {
+            const angle = Math.atan2(dy, dx);
+            // Non-linear soft clamp: closer cursor moves pupil progressively up to max range
+            const clampedDist = Math.min(dist * 0.12, range);
+            eye.targetX = Math.cos(angle) * clampedDist;
+            eye.targetY = Math.sin(angle) * clampedDist;
+          }
+        } else {
+          eye.targetX = 0;
+          eye.targetY = 0;
+        }
+
+        // Lerp pupil position
+        eye.curX += (eye.targetX - eye.curX) * speed;
+        eye.curY += (eye.targetY - eye.curY) * speed;
+
+        if (eye.pupil) {
+          eye.pupil.style.transform = `translate3d(${eye.curX.toFixed(2)}px, ${eye.curY.toFixed(2)}px, 0)`;
+        }
+      });
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+}
+

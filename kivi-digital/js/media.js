@@ -23,12 +23,12 @@ const MEDIA = {
   // Each discipline in "WHAT WE DO" takes one looping video and one
   // photo slot. Add one image URL to the `photos` array when needed.
   services: {
-    videoEditing:    { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465909/VE.mp4", image: "", photos: [""] },
-    contentCreation: { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465911/CC.mp4", image: "", photos: [""] },
-    graphicDesign:   { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465909/GD.mp4", image: "", photos: [""] },
+    videoEditing:    { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386775/videoEditingKiviWeb.mp4", image: "", photos: [""] },
+    contentCreation: { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386848/contentCreationKiviWeb.mp4", image: "", photos: [""] },
+    graphicDesign:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386861/graphicDeisgnKiviWeb.mp4", image: "", photos: [""] },
     webDevelopment:  { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465910/web.mp4", image: "", photos: [""] },
-    socialMedia:     { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465908/SSM.mp4", image: "", photos: [""] },
-    seoAds:          { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465907/SEO.mp4", image: "", photos: [""] },
+    socialMedia:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386860/socialMediaKiviWeb.mp4", image: "", photos: [""] },
+    seoAds:          { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386851/SE_ADSKiviWeb.mp4", image: "", photos: [""] },
   },
 
   work: {
