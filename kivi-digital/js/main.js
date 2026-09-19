@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initLightbox();
   initContactForm();
   initEyeFollowButtons();
+  initCustomCursor();
 });
 
 /* =========================================================
@@ -771,3 +772,86 @@ function initEyeFollowButtons() {
   requestAnimationFrame(render);
 }
 
+/* =========================================================
+   CUSTOM CURSOR
+   Replaces the native arrow with a lime ring that trails the
+   pointer, grows over text, and swaps the hovered text lime.
+   Skipped on touch/coarse-pointer devices (matches the
+   `(hover: hover)` gate used elsewhere in this file).
+   ========================================================= */
+function initCustomCursor() {
+  if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+  const cursor = document.createElement("div");
+  cursor.className = "kv-cursor";
+  cursor.setAttribute("aria-hidden", "true");
+  document.body.appendChild(cursor);
+  document.documentElement.classList.add("kv-custom-cursor");
+
+  const reduceMotion = prefersReducedMotion();
+  const LERP = reduceMotion ? 1 : 0.18;
+
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight / 2;
+  let curX = targetX;
+  let curY = targetY;
+  let hasMoved = false;
+
+  function onMove(e) {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    if (!hasMoved) {
+      curX = targetX;
+      curY = targetY;
+      hasMoved = true;
+      cursor.classList.add("is-visible");
+    }
+  }
+
+  function render() {
+    curX += (targetX - curX) * LERP;
+    curY += (targetY - curY) * LERP;
+    cursor.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  document.addEventListener("mousemove", onMove, { passive: true });
+  document.addEventListener("mouseleave", () => cursor.classList.remove("is-visible"));
+  document.addEventListener("mouseenter", () => { if (hasMoved) cursor.classList.add("is-visible"); });
+
+  // Elements the "hover text" state applies to — anything that
+  // actually carries its own visible text, decorative/media
+  // elements are excluded so the ring doesn't grow over icons,
+  // photos, or the eye-follow buttons.
+  const TEXT_SELECTOR = "h1, h2, h3, h4, h5, h6, p, li, blockquote, span, a, label, small, dt, dd, figcaption";
+  const TEXT_EXCLUDE_SELECTOR = ".kv-star, .process-icon, svg, .team-photo, .hero-media, [data-lightbox-trigger], .wwd-photo, .wwd-media, .road-service-graph, .eye-follow-btn .eye, .navbar, .mobile-nav, .footer";
+
+  function hasDirectText(el) {
+    for (const node of el.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+
+  let hoveredTextEl = null;
+
+  document.addEventListener("mouseover", (e) => {
+    const el = e.target.closest(TEXT_SELECTOR);
+    if (!el || el.closest(TEXT_EXCLUDE_SELECTOR) || !hasDirectText(el)) return;
+    if (hoveredTextEl === el) return;
+    if (hoveredTextEl) hoveredTextEl.classList.remove("kv-text-hovered");
+    hoveredTextEl = el;
+    hoveredTextEl.classList.add("kv-text-hovered");
+    cursor.classList.add("is-hover-text");
+  }, true);
+
+  document.addEventListener("mouseout", (e) => {
+    if (!hoveredTextEl) return;
+    const related = e.relatedTarget;
+    if (related && hoveredTextEl.contains(related)) return;
+    hoveredTextEl.classList.remove("kv-text-hovered");
+    hoveredTextEl = null;
+    cursor.classList.remove("is-hover-text");
+  }, true);
+}

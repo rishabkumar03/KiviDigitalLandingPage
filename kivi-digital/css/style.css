@@ -218,6 +218,12 @@ body.lightbox-locked { overflow: hidden; }
 .mobile-nav.is-open { transform: translateX(0); }
 .mobile-nav a { padding: 14px 0; font-size: 20px; font-family: var(--font-display); border-bottom: 1px solid rgba(246,241,228,.14); }
 .mobile-nav .btn-start { margin-top: 18px; justify-content: center; background: var(--lime); color: var(--navy-3); }
+@media (max-width: 560px) {
+  /* "Start a project" already lives at the bottom of the mobile-nav
+     panel — keeping the header pill too leaves too little room next
+     to the logo and hamburger, and its label wraps/clips. */
+  .nav-right .btn-start { display: none; }
+}
 
 /* =========================================================
    SHARED SECTION UTILITIES
@@ -278,7 +284,7 @@ body.lightbox-locked { overflow: hidden; }
    HERO — split-screen editorial composition
    ========================================================= */
 .sec-hero {
-  min-height: 100svh; height: min(900px, 100svh); padding: 0;
+  height: min(900px, 100svh); padding: 0;
   background: transparent; color: var(--cream-text); overflow: hidden;
 }
 .hero-noise {
@@ -969,7 +975,7 @@ body.lightbox-locked { overflow: hidden; }
   .testimonial-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 800px) {
-  .nav-links, .nav-right .btn-start { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: 100px ;}
+  .nav-links { display: none; }
   .hamburger { display: flex; }
   .section { padding: 72px 0; }
   .hero-panel--copy { min-height: 0; padding: 132px 28px 54px; }
@@ -3159,4 +3165,55 @@ body { color: var(--cream-text); }
     pointer-events: auto;
     transform: translate(-50%, 0) scale(1);
   }
+}
+
+/* =========================================================
+   CUSTOM CURSOR — replaces the native arrow with a lime ring
+   that follows the pointer, growing over text and swapping
+   the hovered text to the brand lime.
+   ========================================================= */
+@media (hover: hover) and (pointer: fine) {
+  html.kv-custom-cursor,
+  html.kv-custom-cursor * {
+    cursor: none !important;
+  }
+  /* keep native text-entry cursors for form fields */
+  html.kv-custom-cursor input,
+  html.kv-custom-cursor textarea,
+  html.kv-custom-cursor select {
+    cursor: auto !important;
+  }
+}
+
+.kv-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--lime);
+  background: rgba(127, 173, 20, 0.16);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 0;
+  transition: width 240ms var(--ease), height 240ms var(--ease),
+              background-color 240ms var(--ease), border-width 240ms var(--ease),
+              opacity 200ms ease;
+}
+
+.kv-cursor.is-visible { opacity: 1; }
+
+.kv-cursor.is-hover-text {
+  width: 54px;
+  height: 54px;
+  border-width: 1.5px;
+  background: rgba(127, 173, 20, 0.22);
+}
+
+/* text under the cursor swaps to brand lime while hovered */
+.kv-text-hovered {
+  color: var(--lime) !important;
+  transition: color 150ms ease;
 }
