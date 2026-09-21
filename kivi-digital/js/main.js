@@ -820,25 +820,18 @@ function initCustomCursor() {
   document.addEventListener("mouseleave", () => cursor.classList.remove("is-visible"));
   document.addEventListener("mouseenter", () => { if (hasMoved) cursor.classList.add("is-visible"); });
 
-  // Elements the "hover text" state applies to — anything that
-  // actually carries its own visible text, decorative/media
-  // elements are excluded so the ring doesn't grow over icons,
-  // photos, or the eye-follow buttons.
-  const TEXT_SELECTOR = "h1, h2, h3, h4, h5, h6, p, li, blockquote, span, a, label, small, dt, dd, figcaption";
-  const TEXT_EXCLUDE_SELECTOR = ".kv-star, .process-icon, svg, .team-photo, .hero-media, [data-lightbox-trigger], .wwd-photo, .wwd-media, .road-service-graph, .eye-follow-btn .eye, .navbar, .mobile-nav, .footer";
-
-  function hasDirectText(el) {
-    for (const node of el.childNodes) {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) return true;
-    }
-    return false;
-  }
+  // Elements the "hover text" (bigger ring) state applies to — the
+  // hero h1 plus the 8 major section headings, each explicitly
+  // marked with .kv-cursor-lg in the markup. Every other piece of
+  // text (paragraphs, nav links, buttons, card copy, etc.) keeps the
+  // default smaller ring on hover.
+  const TEXT_SELECTOR = ".kv-cursor-lg";
 
   let hoveredTextEl = null;
 
   document.addEventListener("mouseover", (e) => {
     const el = e.target.closest(TEXT_SELECTOR);
-    if (!el || el.closest(TEXT_EXCLUDE_SELECTOR) || !hasDirectText(el)) return;
+    if (!el) return;
     if (hoveredTextEl === el) return;
     if (hoveredTextEl) hoveredTextEl.classList.remove("kv-text-hovered");
     hoveredTextEl = el;
