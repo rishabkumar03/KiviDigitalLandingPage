@@ -2786,9 +2786,12 @@ body {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background-color: #0d1609;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  background-origin: padding-box;
+  padding: 10%;
+  box-sizing: border-box;
   border: 3px solid rgba(127, 173, 20, 0.35);
   overflow: hidden;
   cursor: zoom-in;
@@ -2919,6 +2922,11 @@ body {
   font-weight: 800;
   line-height: 1;
   transition: background 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+}
+.sec-work .work-card-socials a svg {
+  width: 20px;
+  height: 20px;
+  display: block;
 }
 .sec-work .work-card-socials a:hover,
 .sec-work .work-card-socials a:focus-visible {
