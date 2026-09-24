@@ -35,6 +35,7 @@ const MEDIA = {
     itHub:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg", logo: "" },
     niwasa:     { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg", logo: "" },
     minePortal: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855408/minePortalWebLogo.jpg", logo: "" },
+    dhruviEvents: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790252820/dhruviLogo.jpg", logo: "" },
     tejas:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855355/TejasWebLogo.jpg", logo: "" },
     ranchiRise: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg", logo: "" },
   },
@@ -123,6 +124,7 @@ function applyMedia() {
   setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");
   setSrc("[data-media='work-niwasa']", MEDIA.work.niwasa.image, "background");
   setSrc("[data-media='work-mine-portal']", MEDIA.work.minePortal.image, "background");
+  setSrc("[data-media='work-dhruvi-events']", MEDIA.work.dhruviEvents.image, "background");
   setSrc("[data-media='work-kivi']", MEDIA.work.tejas.image, "background");
   setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
 
