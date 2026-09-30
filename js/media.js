@@ -26,7 +26,7 @@ const MEDIA = {
     videoEditing:    { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386775/videoEditingKiviWeb.mp4", image: "", photos: [""] },
     contentCreation: { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386848/contentCreationKiviWeb.mp4", image: "", photos: [""] },
     graphicDesign:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386861/graphicDeisgnKiviWeb.mp4", image: "", photos: [""] },
-    webDevelopment:  { video: "https://res.cloudinary.com/orpxplwd/video/upload/v1786465910/web.mp4", image: "", photos: [""] },
+    webDevelopment:  { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790682543/WebsiteDevelopment.mp4", image: "", photos: [""] },
     socialMedia:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386860/socialMediaKiviWeb.mp4", image: "", photos: [""] },
     seoAds:          { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386851/SE_ADSKiviWeb.mp4", image: "", photos: [""] },
   },
