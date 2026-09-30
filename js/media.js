@@ -16,19 +16,19 @@
 
 const MEDIA = {
   hero: {
-    video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1788955092/secondKiviWeb.mp4",
+    video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790763907/heroVideo.mp4",
     poster: "",
   },
 
   // Each discipline in "WHAT WE DO" takes one looping video and one
   // photo slot. Add one image URL to the `photos` array when needed.
   services: {
-    videoEditing:    { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386775/videoEditingKiviWeb.mp4", image: "", photos: [""] },
-    contentCreation: { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386848/contentCreationKiviWeb.mp4", image: "", photos: [""] },
-    graphicDesign:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386861/graphicDeisgnKiviWeb.mp4", image: "", photos: [""] },
+    videoEditing:    { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764072/finalVideoEditing.mp4", image: "", photos: [""] },
+    contentCreation: { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764117/finalContentCreation.mp4", image: "", photos: [""] },
+    graphicDesign:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764113/finalGraphicDesign.mp4", image: "", photos: [""] },
     webDevelopment:  { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790682543/WebsiteDevelopment.mp4", image: "", photos: [""] },
-    socialMedia:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386860/socialMediaKiviWeb.mp4", image: "", photos: [""] },
-    seoAds:          { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1789386851/SE_ADSKiviWeb.mp4", image: "", photos: [""] },
+    socialMedia:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764117/finalSocialMedia.mp4", image: "", photos: [""] },
+    seoAds:          { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764115/finalSEO_ADS.mp4", image: "", photos: [""] },
   },
 
   work: {
