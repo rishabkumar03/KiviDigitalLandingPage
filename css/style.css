@@ -1758,7 +1758,7 @@ body {
 }
 .footer-main {
   display: grid;
-  grid-template-columns: 1.2fr repeat(4, minmax(130px, 1fr));
+  grid-template-columns: minmax(0,1.1fr) minmax(0,.8fr) minmax(0,2.3fr) minmax(0,1.3fr) minmax(0,1.3fr);
   gap: clamp(28px, 4vw, 64px);
   padding-bottom: 70px;
   border-bottom: 1px solid rgba(244,243,234,.18);
@@ -3018,4 +3018,27 @@ body {
 .kv-text-hovered {
   color: var(--lime) !important;
   transition: color 150ms ease;
+}
+
+/* Footer: brand-accurate social hovers + wide two-column Services list */
+.footer-social-link.is-instagram:hover { background: linear-gradient(45deg,#F58529,#DD2A7B 55%,#8134AF); color: #fff; }
+.footer-social-link.is-facebook:hover  { background: #1877F2; color: #fff; }
+.footer-social-link.is-youtube:hover   { background: #FF0000; color: #fff; }
+.footer-services-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 32px;
+}
+.footer-services-group h4 {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(244,243,234,.14);
+}
+@media (max-width: 480px) {
+  .footer-services-groups { grid-template-columns: 1fr; gap: 22px; }
 }
