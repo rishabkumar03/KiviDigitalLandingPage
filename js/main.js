@@ -1,3 +1,5 @@
+window.CONTACT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwscGs5gs8xxoR0qkMMOxaPPPkVMC-tVwE2p1-kHRfMZ_UBiYCCgpBmzri45W10SETC/exec"; // my Web app URL
+
 /* =========================================================
    KIVI DIGITAL — main.js
    Intro sequence, nav, scroll reveals, WHAT WE DO media,
