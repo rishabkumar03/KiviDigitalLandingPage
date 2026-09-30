@@ -2930,10 +2930,16 @@ body {
 }
 .sec-work .work-card-socials a:hover,
 .sec-work .work-card-socials a:focus-visible {
-  background: var(--lime);
-  color: #000;
-  transform: translateY(-2px);
+  background: transparent;
+  transform: translateY(-2px) scale(1.12);
 }
+.sec-work .work-card-socials a svg { transition: filter 180ms var(--ease); }
+.sec-work .work-card-socials a[aria-label$="Instagram"]:hover svg,
+.sec-work .work-card-socials a[aria-label$="Instagram"]:focus-visible svg { filter: drop-shadow(0 0 6px rgba(221,42,123,.65)); }
+.sec-work .work-card-socials a[aria-label$="Facebook"]:hover svg,
+.sec-work .work-card-socials a[aria-label$="Facebook"]:focus-visible svg  { filter: drop-shadow(0 0 6px rgba(24,119,242,.65)); }
+.sec-work .work-card-socials a[aria-label$="YouTube"]:hover svg,
+.sec-work .work-card-socials a[aria-label$="YouTube"]:focus-visible svg   { filter: drop-shadow(0 0 6px rgba(255,0,0,.6)); }
 .sec-work .work-card:hover .work-card-socials,
 .sec-work .work-card:focus-within .work-card-socials {
   opacity: 1;
