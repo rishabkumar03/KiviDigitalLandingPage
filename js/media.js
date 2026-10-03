@@ -46,6 +46,9 @@ const MEDIA = {
     itHub: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg",
     niwasa: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg",
     ranchiRise: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg",
+    minePortal: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855408/minePortalWebLogo.jpg",
+    dhruviEvents: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790252820/dhruviLogo.jpg",
+    tejas: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855355/TejasWebLogo.jpg"
   },
 
   cta: {
@@ -88,6 +91,9 @@ function applyMedia() {
   setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
   setTestimonialLogo('testimonial-niwasa-logo', MEDIA.testimonialLogos.niwasa);
   setTestimonialLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise);
+  setTestimonialLogo('testimonial-mine-portal-logo', MEDIA.testimonialLogos.minePortal);
+  setTestimonialLogo('testimonial-dhruvi-events-logo', MEDIA.testimonialLogos.dhruviEvents);
+  setTestimonialLogo('testimonial-tejas-logo', MEDIA.testimonialLogos.tejas);
 
   const setSrc = (selector, url, attr = "src") => {
     if (!url) return;

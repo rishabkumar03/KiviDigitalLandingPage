@@ -125,7 +125,7 @@ body.lightbox-locked { overflow: hidden; }
   display: flex; align-items: center; gap: 10px;
   transition: transform 220ms var(--ease); 
 }
-.brand:hover { transform: scale(1.03); }
+.brand:hover { transform: scale(1.06); }
 .brand-mark {
   height: 64px; 
   width: auto; 
@@ -158,8 +158,37 @@ body.lightbox-locked { overflow: hidden; }
   content: attr(data-text); position: absolute; left: 0; top: 100%;
   transition: transform 380ms var(--ease); color: var(--accent, var(--lime));
 }
-.hover-anim:hover span, a:hover .hover-anim span, button:hover .hover-anim span { transform: translateY(-100%); }
-.hover-anim:hover::after, a:hover .hover-anim::after, button:hover .hover-anim::after { transform: translateY(-100%); }
+
+/* =========================================================
+   HOVER: no upward text-roll anywhere. Every link/button that
+   contains .hover-anim gets the same hover as the logo (a gentle
+   scale), and its text turns lime when the default colour is
+   black/white. Lime-filled buttons keep their text colour (lime
+   on lime would be invisible).
+   ========================================================= */
+.hover-anim::after { display: none; }
+
+.nav-links a { display: inline-block; }
+
+:is(a, button):has(.hover-anim),
+:is(a, button).hover-anim {
+  transition: transform 220ms var(--ease), color 220ms ease, background 220ms var(--ease),
+              box-shadow 220ms var(--ease), opacity 200ms ease;
+}
+
+.nav-links a:hover,
+a:has(.hover-anim):hover,
+a.hover-anim:hover,
+button:has(.hover-anim):not(:disabled):hover,
+button.hover-anim:not(:disabled):hover {
+  transform: scale(1.06) !important;
+}
+
+:is(a, button):has(.hover-anim):not(.btn-start, .work-name, .eye-follow-btn, .footer-subscribe *):hover,
+:is(a, button).hover-anim:not(.btn-start, .work-name, .eye-follow-btn, .footer-subscribe *):hover,
+.nav-links a:hover {
+  color: var(--lime);
+}
 .nav-right { display: flex; align-items: center; gap: 18px; }
 .btn-start {
   display: inline-flex; align-items: center; gap: 8px;
@@ -728,8 +757,8 @@ body.lightbox-locked { overflow: hidden; }
 .btn-submit.is-loading .hover-anim span { animation: pulse-dots 1s ease-in-out infinite; }
 @keyframes pulse-dots { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 .form-status { margin-top: 14px; font-size: 13.5px; min-height: 18px; }
-.form-status.success { color: #8fd67f; }
-.form-status.error { color: #e0776a; }
+.form-status.success { color: #000000; }
+.form-status.error { color: #ff0000; }
 
 /* =========================================================
    FOOTER
@@ -2975,57 +3004,6 @@ body {
   }
 }
 
-/* =========================================================
-   CUSTOM CURSOR — replaces the native arrow with a lime ring
-   that follows the pointer, growing over text and swapping
-   the hovered text to the brand lime.
-   ========================================================= */
-@media (hover: hover) and (pointer: fine) {
-  html.kv-custom-cursor,
-  html.kv-custom-cursor * {
-    cursor: none !important;
-  }
-  /* keep native text-entry cursors for form fields */
-  html.kv-custom-cursor input,
-  html.kv-custom-cursor textarea,
-  html.kv-custom-cursor select {
-    cursor: auto !important;
-  }
-}
-
-.kv-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--lime);
-  background: rgba(127, 173, 20, 0.16);
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate3d(-50%, -50%, 0);
-  opacity: 0;
-  transition: width 240ms var(--ease), height 240ms var(--ease),
-              background-color 240ms var(--ease), border-width 240ms var(--ease),
-              opacity 200ms ease;
-}
-
-.kv-cursor.is-visible { opacity: 1; }
-
-.kv-cursor.is-hover-text {
-  width: 54px;
-  height: 54px;
-  border-width: 1.5px;
-  background: rgba(127, 173, 20, 0.22);
-}
-
-/* text under the cursor swaps to brand lime while hovered */
-.kv-text-hovered {
-  color: var(--lime) !important;
-  transition: color 150ms ease;
-}
-
 /* Footer: brand-accurate social hovers + wide two-column Services list */
 .footer-social-link.is-instagram:hover { background: linear-gradient(45deg,#F58529,#DD2A7B 55%,#8134AF); color: #fff; }
 .footer-social-link.is-facebook:hover  { background: #1877F2; color: #fff; }
@@ -3048,3 +3026,262 @@ body {
 @media (max-width: 480px) {
   .footer-services-groups { grid-template-columns: 1fr; gap: 22px; }
 }
+
+/* =========================================================
+   ENQUIRY POPUP — opens automatically after 3 seconds
+   (see initEnquiryPopup in js/main.js). The panel is a copy of the
+   page's .contact-form-card, so the rules below repeat the
+   ".sec-contact" form styling for it: both forms look identical.
+   ========================================================= */
+body.enquiry-locked { overflow: hidden; }
+.enquiry-modal {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: center; padding: 4vh 4vw;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 260ms var(--ease), visibility 0s linear 260ms;
+}
+.enquiry-modal.is-open {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity 260ms var(--ease);
+}
+.enquiry-backdrop { position: absolute; inset: 0; background: rgba(4,9,20,.78); backdrop-filter: blur(6px); }
+.enquiry-modal .enquiry-panel {
+  position: relative; z-index: 1; width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto;
+  outline: none;
+  transform: scale(.94) translateY(10px); transition: transform 320ms var(--ease-soft);
+}
+.enquiry-modal.is-open .enquiry-panel { transform: scale(1) translateY(0); }
+
+/* card: same glass look as the page form */
+.enquiry-modal .contact-form-card {
+  background: rgba(244,243,234,.82);
+  border: 1px solid rgba(244,243,234,.28);
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(24,32,24,.22);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 44px);
+  color: var(--ink);
+}
+.enquiry-modal .contact-form-card form { display: grid; gap: 18px; }
+.enquiry-modal .form-row { display: grid; gap: 18px; }
+@media (min-width: 760px) {
+  .enquiry-modal .form-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 901px) {
+  .enquiry-modal .field { margin-bottom: 0; }
+  .enquiry-modal .btn-submit { margin-top: 4px; }
+}
+.enquiry-modal .field label { color: #7fad14; }
+.enquiry-modal .field input,
+.enquiry-modal .field select,
+.enquiry-modal .field textarea {
+  background: rgba(255,255,255,.92);
+  border-color: rgba(24,32,24,.18);
+  color: var(--dark-text);
+  min-height: 48px;
+  border-radius: 12px;
+}
+.enquiry-modal .field textarea { min-height: 126px; }
+.enquiry-modal .field input:focus,
+.enquiry-modal .field select:focus,
+.enquiry-modal .field textarea:focus { border-color: var(--sage-deep); box-shadow: 0 0 0 4px rgba(89,107,80,.14); }
+.enquiry-modal .btn-submit {
+  background: linear-gradient(135deg, var(--dark-text), var(--sage-deep));
+  color: var(--cream-text);
+  height: 54px;
+  padding: 0 22px;
+  border-radius: 14px;
+  box-shadow: 0 16px 34px rgba(24,32,24,.22);
+}
+.enquiry-modal .btn-submit:hover {
+  background: linear-gradient(135deg, var(--sage-deep), #2f3c2c);
+  box-shadow: 0 22px 44px rgba(24,32,24,.28);
+}
+
+/* popup-only header (dark text on the light card) */
+.enquiry-head { margin-bottom: 22px; padding-right: 40px; }
+.enquiry-eyebrow { font-family: var(--font-display); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #7fad14; font-weight: 700; }
+.enquiry-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.15; margin-top: 8px; color: var(--dark-text); }
+.enquiry-sub { margin-top: 10px; font-size: 14.5px; line-height: 1.6; color: rgba(0,0,0,.68); }
+.enquiry-close {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,.08); color: var(--dark-text);
+  display: grid; place-items: center; border: 1px solid rgba(0,0,0,.18);
+  transition: transform 200ms var(--ease), background 200ms var(--ease);
+}
+.enquiry-close:hover { transform: rotate(90deg); background: rgba(0,0,0,.16); }
+@media (prefers-reduced-motion: reduce) {
+  .enquiry-modal, .enquiry-modal .enquiry-panel { transition: none; }
+}
+
+/* =========================================================
+   TESTIMONIAL CAROUSEL — 3 cards per view (2 tablet, 1 phone),
+   previous/next buttons, dots and swipe. See initTestimonialCarousel
+   in js/main.js.
+   ========================================================= */
+.testimonial-carousel { position: relative; z-index: 1; }
+.testimonial-viewport {
+  overflow: hidden;
+  /* room for the card shadows and hover lift, cancelled out by the margins */
+  padding: 16px 12px 40px;
+  margin: -16px -12px -24px;
+  touch-action: pan-y;
+}
+.testimonial-track {
+  --per-view: 3;
+  --tgap: 24px;
+  display: flex;
+  align-items: stretch;
+  gap: var(--tgap);
+  transition: transform 520ms var(--ease);
+  will-change: transform;
+}
+.testimonial-track.is-dragging { transition: none; }
+.testimonial-track > .testimonial-card {
+  flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--tgap)) / var(--per-view));
+  min-width: 0;
+}
+@media (max-width: 1000px) { .testimonial-track { --per-view: 2; } }
+@media (max-width: 700px)  { .testimonial-track { --per-view: 1; } }
+
+.testimonial-stage { position: relative; }
+.testimonial-nav {
+  position: absolute;
+  top: calc(50% - 8px);
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 50px; height: 50px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--sage-deep);
+  border: 1px solid rgba(127,173,20,.55);
+  color: var(--cream-text);
+  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+  transition: transform 220ms var(--ease), background 220ms var(--ease), color 220ms ease, opacity 220ms ease, border-color 220ms ease;
+}
+/* left arrow at the left side of the cards, right arrow at the right side */
+.testimonial-prev { left: -25px; }
+.testimonial-next { right: -25px; }
+@media (min-width: 1340px) {
+  .testimonial-prev { left: -68px; }
+  .testimonial-next { right: -68px; }
+}
+.testimonial-nav:not(:disabled):hover {
+  transform: translateY(-50%) scale(1.06);
+  background: #16210a;
+  border-color: var(--lime);
+  color: var(--lime);
+}
+.testimonial-nav:disabled { opacity: .32; cursor: default; }
+.testimonial-dots { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 34px; }
+.testimonial-dots[hidden] { display: none; }
+.testimonial-dot {
+  width: 8px; height: 8px; padding: 0; border-radius: 999px;
+  background: rgba(244,243,234,.28);
+  transition: width 260ms var(--ease), background 260ms var(--ease);
+}
+.testimonial-dot:hover { background: rgba(244,243,234,.55); }
+.testimonial-dot.is-active { width: 26px; background: var(--lime); }
+/* phones: one card at a time, arrows sit on either side of the dots below it */
+@media (max-width: 700px) {
+  .testimonial-carousel {
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    align-items: center;
+    row-gap: 26px;
+  }
+  .testimonial-stage { display: contents; }
+  .testimonial-viewport { grid-column: 1 / -1; grid-row: 1; }
+  .testimonial-nav { position: static; transform: none; grid-row: 2; }
+  .testimonial-nav:not(:disabled):hover { transform: scale(1.06); }
+  .testimonial-prev { grid-column: 1; }
+  .testimonial-next { grid-column: 3; }
+  .testimonial-dots { grid-column: 2; grid-row: 2; margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-track { transition: none; }
+}
+
+/* =========================================================
+   NAVBAR DROPDOWNS (hover / keyboard focus)
+   ========================================================= */
+.nav-links .nav-item { position: relative; list-style: none; }
+.nav-links .nav-item > a { display: inline-flex; align-items: center; gap: 6px; }
+.nav-caret { transition: transform 220ms var(--ease); opacity: .7; flex: none; }
+.nav-item:hover > a .nav-caret,
+.nav-item:focus-within > a .nav-caret { transform: rotate(180deg); }
+
+.nav-dropdown {
+  position: absolute; top: 100%; left: 50%; z-index: 5;
+  padding-top: 20px;               /* invisible bridge so the menu doesn't close in the gap */
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 200ms ease, transform 240ms var(--ease), visibility 0s linear 240ms;
+}
+.nav-item:hover > .nav-dropdown,
+.nav-item:focus-within > .nav-dropdown {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}
+.nav-item.is-closed > .nav-dropdown { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.nav-dropdown-panel {
+  display: flex; gap: 28px; min-width: 210px; padding: 20px 22px;
+  background: #070d03;
+  border: 1px solid rgba(255,255,255,.1); border-radius: 18px;
+  box-shadow: 0 24px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(179,255,0,.05);
+  backdrop-filter: blur(16px);
+}
+.nav-dropdown--wide .nav-dropdown-panel { min-width: 380px; }
+.nav-dd-col { min-width: 170px; }
+.nav-dd-col h4 {
+  margin: 0 0 10px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  font-weight: 700; color: var(--lime); white-space: nowrap;
+}
+.nav-dd-col ul { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.nav-dd-col ul.nav-dd-2col { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
+
+/* beat the .nav-links a rules (uppercase, scale, lime) for the items inside the menu */
+.nav-links .nav-dropdown a,
+.nav-links .nav-dd-static {
+  display: flex; align-items: baseline; gap: 8px; padding: 7px 10px; margin: 0 -10px;
+  border-radius: 10px; white-space: nowrap;
+  font-size: 13.5px; letter-spacing: 0; text-transform: none; font-weight: 500;
+  color: rgba(244,243,234,.86);
+  transition: background 180ms ease, color 180ms ease, transform 180ms var(--ease);
+}
+.nav-links .nav-dd-static { color: rgba(244,243,234,.55); }
+.nav-links .nav-dropdown a:hover,
+.nav-links .nav-dropdown a:focus-visible {
+  background: rgba(179,255,0,.12); color: var(--lime);
+  transform: translateX(3px) !important;
+}
+.nav-dropdown a small { font-size: 11px; color: rgba(244,243,234,.5); letter-spacing: .02em; }
+.nav-dropdown a b { font-size: 10.5px; color: var(--lime); font-weight: 700; letter-spacing: .06em; min-width: 18px; }
+
+@media (max-width: 800px), (hover: none) {
+  .nav-dropdown { display: none; }   /* mobile uses the slide-in panel; touch devices just follow the link */
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-dropdown, .nav-caret { transition: none; }
+}
+
+/* =========================================================
+   HEADINGS — two-tone + lime hover (no ring cursor)
+   First part white, second part (.accent) always brand lime,
+   in every section regardless of the section's --accent value.
+   On hover the two colours swap: the white part turns lime, the lime part turns white.
+   ========================================================= */
+.hero-title .accent,
+.section-title .accent,
+.cta-title .accent { color: var(--lime); }
+
+.kv-hover-lime,
+.kv-hover-lime .accent { transition: color 150ms ease; }
+.kv-hover-lime:hover { color: var(--lime) !important; }
+/* the lime part swaps to white while the heading is hovered */
+.kv-hover-lime:hover .accent { color: #fff !important; }

@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initIntro();
   initNavbar();
   initNavPill();
+  initNavDropdowns();
   initFlipCardsTouch();
   initFlipCards();
   initMobileMenu();
@@ -18,9 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initWhatWeDo();
   initServiceGraphs();
   initLightbox();
+  initTestimonialCarousel();
+  initEnquiryPopup();
   initContactForm();
   initEyeFollowButtons();
-  initCustomCursor();
 });
 
 /* =========================================================
@@ -149,6 +151,26 @@ function initNavPill() {
 
   links.forEach((link) => link.addEventListener('mouseenter', () => moveTo(link)));
   container.addEventListener('mouseleave', () => pill.classList.remove('is-active'));
+}
+
+/* =========================================================
+   NAVBAR DROPDOWNS — close right after a click, re-arm on leave
+   ========================================================= */
+function initNavDropdowns() {
+  document.querySelectorAll(".nav-item.has-dropdown").forEach((item) => {
+    item.querySelectorAll(".nav-dropdown a").forEach((a) => {
+      a.addEventListener("click", () => {
+        item.classList.add("is-closed");
+        if (document.activeElement && item.contains(document.activeElement)) document.activeElement.blur();
+      });
+    });
+    item.addEventListener("mouseleave", () => item.classList.remove("is-closed"));
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const open = document.querySelector(".nav-item:focus-within");
+    if (open) { open.classList.add("is-closed"); document.activeElement.blur(); }
+  });
 }
 
 function initFlipCardsTouch() {
@@ -611,6 +633,256 @@ function initContactForm() {
 }
 
 /* =========================================================
+   ENQUIRY POPUP
+   Opens the enquiry form automatically 3 seconds after the page is
+   ready (after the intro loader). It is a copy of the contact card
+   that is already on the page (same fields, same look, same submit
+   handler), so visitors see one and the same form. Shown once per
+   browser tab/session.
+   To change the delay, edit SHOW_AFTER_MS below.
+   ========================================================= */
+function initEnquiryPopup() {
+  const SHOW_AFTER_MS = 3000;
+  const STORAGE_KEY = "kv-enquiry-shown";
+
+  const sourceForm = document.querySelector("[data-contact-form]");
+  if (!sourceForm) return;
+  try { if (sessionStorage.getItem(STORAGE_KEY)) return; } catch (e) {}
+
+  // --- build the popup from a copy of the page's contact card ------
+  const sourceCard = sourceForm.closest(".contact-form-card") || sourceForm;
+  const panel = sourceCard.cloneNode(true);
+  panel.classList.remove("reveal");
+  // GSAP writes inline opacity/transform onto the original card before it scrolls
+  // into view; drop those so the copy is visible straight away.
+  panel.removeAttribute("style");
+  panel.querySelectorAll("[style]").forEach((el) => el.removeAttribute("style"));
+  panel.querySelectorAll(".reveal").forEach((el) => el.classList.remove("reveal"));
+  // keep ids unique so labels still point at the right inputs
+  if (panel.id) panel.id += "-popup";
+  panel.querySelectorAll("[id]").forEach((el) => { el.id += "-popup"; });
+  panel.querySelectorAll("label[for]").forEach((l) => l.setAttribute("for", l.getAttribute("for") + "-popup"));
+  const form = panel.matches("[data-contact-form]") ? panel : panel.querySelector("[data-contact-form]");
+  const statusEl = form.querySelector("[data-form-status]");
+  if (statusEl) { statusEl.textContent = ""; statusEl.className = "form-status"; }
+
+  panel.classList.add("enquiry-panel");
+  panel.setAttribute("tabindex", "-1");
+  panel.insertAdjacentHTML("afterbegin",
+    '<button type="button" class="enquiry-close" aria-label="Close enquiry form" data-enquiry-close>' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg>' +
+    '</button>' +
+    '<div class="enquiry-head">' +
+      '<p class="enquiry-eyebrow">Have a project in mind?</p>' +
+      '<h2 class="enquiry-title" id="enquiry-popup-title">Tell us about your project</h2>' +
+      '<p class="enquiry-sub">Fill in the form and we\u2019ll reply within one business day.</p>' +
+    '</div>');
+
+  const modal = document.createElement("div");
+  modal.className = "enquiry-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "enquiry-popup-title");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = '<div class="enquiry-backdrop" data-enquiry-close></div>';
+  modal.appendChild(panel);
+  document.body.appendChild(modal);
+
+  let lastFocused = null;
+  let autoCloseTimer = null;
+
+  function open() {
+    lastFocused = document.activeElement;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("enquiry-locked");
+    // focus the panel (not an input) so phones don't pop the keyboard up
+    panel.focus({ preventScroll: true });
+    try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch (e) {}
+  }
+
+  function close() {
+    clearTimeout(autoCloseTimer);
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("enquiry-locked");
+    if (lastFocused && lastFocused.focus) lastFocused.focus({ preventScroll: true });
+  }
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.closest("[data-enquiry-close]")) close();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.classList.contains("is-open")) return;
+    if (e.key === "Escape") { close(); return; }
+    if (e.key !== "Tab") return;
+    const focusable = Array.from(modal.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter((el) => !el.closest(".honeypot") && el.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === panel)) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+
+  // close by itself a moment after a successful submission
+  if (statusEl) {
+    new MutationObserver(() => {
+      if (statusEl.classList.contains("success")) {
+        clearTimeout(autoCloseTimer);
+        autoCloseTimer = setTimeout(close, 3500);
+      }
+    }).observe(statusEl, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  // --- timing -------------------------------------------------------
+  const isBusy = () =>
+    document.body.classList.contains("lightbox-locked") ||
+    !!document.querySelector(".mobile-nav.is-open");
+
+  function tryOpen() {
+    const active = document.activeElement;
+    // visitor is already typing in the page's own form: don't interrupt
+    if (active && active.closest && active.closest("[data-contact-form]") && !modal.contains(active)) return;
+    if (isBusy()) { setTimeout(tryOpen, 1000); return; }
+    open();
+  }
+
+  function waitForIntro() {
+    if (document.body.classList.contains("intro-locked")) { setTimeout(waitForIntro, 300); return; }
+    setTimeout(tryOpen, SHOW_AFTER_MS);
+  }
+  waitForIntro();
+}
+
+/* =========================================================
+   TESTIMONIAL CAROUSEL
+   Horizontal slider that moves a full page at a time: 3 cards on
+   desktop (2 on tablets, 1 on phones). Previous/next buttons sit at
+   the left and right of the cards; there are dots, swipe on touch
+   screens and the left/right arrow keys too. Add more feedback by
+   copying a .testimonial-card into [data-testimonial-track].
+   The cards per view are set by --per-view in css/style.css.
+   ========================================================= */
+function initTestimonialCarousel() {
+  const root = document.querySelector("[data-testimonial-carousel]");
+  if (!root) return;
+  const viewport = root.querySelector("[data-testimonial-viewport]");
+  const track = root.querySelector("[data-testimonial-track]");
+  const prevBtn = root.querySelector("[data-testimonial-prev]");
+  const nextBtn = root.querySelector("[data-testimonial-next]");
+  const dotsEl = root.querySelector("[data-testimonial-dots]");
+  const cards = Array.from(track.children);
+  if (!cards.length) return;
+
+  let index = 0;       // first visible card
+  let perView = 3;
+  let step = 0;
+  let pages = [0];     // first-card index of each page
+  let dots = [];
+
+  const pageIndex = () => pages.indexOf(index);
+
+  function buildDots() {
+    if (!dotsEl || dots.length === pages.length) return;
+    dotsEl.innerHTML = "";
+    dots = [];
+    pages.forEach((_, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "testimonial-dot";
+      dot.setAttribute("aria-label", "Go to page " + (i + 1) + " of feedback");
+      dot.addEventListener("click", () => goPage(i));
+      dotsEl.appendChild(dot);
+      dots.push(dot);
+    });
+    dotsEl.hidden = pages.length <= 1;
+  }
+
+  function measure() {
+    const cs = getComputedStyle(track);
+    perView = parseInt(cs.getPropertyValue("--per-view"), 10) || 3;
+    const gap = parseFloat(cs.columnGap) || 0;
+    step = cards[0].offsetWidth + gap;
+    const maxIndex = Math.max(0, cards.length - perView);
+    pages = [];
+    for (let i = 0; i < cards.length; i += perView) {
+      const p = Math.min(i, maxIndex);
+      if (pages.indexOf(p) === -1) pages.push(p);
+    }
+    // keep the current position on the nearest page (e.g. after a resize)
+    index = pages.reduce((best, p) => (Math.abs(p - index) < Math.abs(best - index) ? p : best), pages[0]);
+    buildDots();
+  }
+
+  function render() {
+    track.style.transform = "translate3d(" + (-index * step) + "px, 0, 0)";
+    const pi = pageIndex();
+    if (prevBtn) prevBtn.disabled = pi <= 0;
+    if (nextBtn) nextBtn.disabled = pi >= pages.length - 1;
+    dots.forEach((d, i) => {
+      d.classList.toggle("is-active", i === pi);
+      if (i === pi) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current");
+    });
+    cards.forEach((c, i) => c.setAttribute("aria-hidden", i < index || i >= index + perView ? "true" : "false"));
+  }
+
+  function goPage(n) {
+    n = Math.max(0, Math.min(pages.length - 1, n));
+    index = pages[n];
+    render();
+  }
+
+  if (prevBtn) prevBtn.addEventListener("click", () => goPage(pageIndex() - 1));
+  if (nextBtn) nextBtn.addEventListener("click", () => goPage(pageIndex() + 1));
+
+  root.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { goPage(pageIndex() - 1); }
+    else if (e.key === "ArrowRight") { goPage(pageIndex() + 1); }
+  });
+
+  // swipe on touch screens / pens
+  let startX = 0;
+  let dragDx = 0;
+  let dragging = false;
+  viewport.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse") return;
+    dragging = true;
+    startX = e.clientX;
+    dragDx = 0;
+    track.classList.add("is-dragging");
+  });
+  viewport.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    dragDx = e.clientX - startX;
+    track.style.transform = "translate3d(" + (-index * step + dragDx) + "px, 0, 0)";
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove("is-dragging");
+    if (Math.abs(dragDx) > 50) goPage(pageIndex() + (dragDx < 0 ? 1 : -1));
+    else render();
+  }
+  viewport.addEventListener("pointerup", endDrag);
+  viewport.addEventListener("pointercancel", endDrag);
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { measure(); render(); }, 120);
+  });
+
+  measure();
+  render();
+}
+
+/* =========================================================
    EYE FOLLOW BUTTON COMPONENT
    Playful, highly interactive UI component with animated eyes
    whose pupils smoothly follow the user's cursor in real time.
@@ -772,81 +1044,4 @@ function initEyeFollowButtons() {
   }
 
   requestAnimationFrame(render);
-}
-
-/* =========================================================
-   CUSTOM CURSOR
-   Replaces the native arrow with a lime ring that trails the
-   pointer, grows over text, and swaps the hovered text lime.
-   Skipped on touch/coarse-pointer devices (matches the
-   `(hover: hover)` gate used elsewhere in this file).
-   ========================================================= */
-function initCustomCursor() {
-  if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-
-  const cursor = document.createElement("div");
-  cursor.className = "kv-cursor";
-  cursor.setAttribute("aria-hidden", "true");
-  document.body.appendChild(cursor);
-  document.documentElement.classList.add("kv-custom-cursor");
-
-  const reduceMotion = prefersReducedMotion();
-  const LERP = reduceMotion ? 1 : 0.18;
-
-  let targetX = window.innerWidth / 2;
-  let targetY = window.innerHeight / 2;
-  let curX = targetX;
-  let curY = targetY;
-  let hasMoved = false;
-
-  function onMove(e) {
-    targetX = e.clientX;
-    targetY = e.clientY;
-    if (!hasMoved) {
-      curX = targetX;
-      curY = targetY;
-      hasMoved = true;
-      cursor.classList.add("is-visible");
-    }
-  }
-
-  function render() {
-    curX += (targetX - curX) * LERP;
-    curY += (targetY - curY) * LERP;
-    cursor.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) translate(-50%, -50%)`;
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
-
-  document.addEventListener("mousemove", onMove, { passive: true });
-  document.addEventListener("mouseleave", () => cursor.classList.remove("is-visible"));
-  document.addEventListener("mouseenter", () => { if (hasMoved) cursor.classList.add("is-visible"); });
-
-  // Elements the "hover text" (bigger ring) state applies to — the
-  // hero h1 plus the 8 major section headings, each explicitly
-  // marked with .kv-cursor-lg in the markup. Every other piece of
-  // text (paragraphs, nav links, buttons, card copy, etc.) keeps the
-  // default smaller ring on hover.
-  const TEXT_SELECTOR = ".kv-cursor-lg";
-
-  let hoveredTextEl = null;
-
-  document.addEventListener("mouseover", (e) => {
-    const el = e.target.closest(TEXT_SELECTOR);
-    if (!el) return;
-    if (hoveredTextEl === el) return;
-    if (hoveredTextEl) hoveredTextEl.classList.remove("kv-text-hovered");
-    hoveredTextEl = el;
-    hoveredTextEl.classList.add("kv-text-hovered");
-    cursor.classList.add("is-hover-text");
-  }, true);
-
-  document.addEventListener("mouseout", (e) => {
-    if (!hoveredTextEl) return;
-    const related = e.relatedTarget;
-    if (related && hoveredTextEl.contains(related)) return;
-    hoveredTextEl.classList.remove("kv-text-hovered");
-    hoveredTextEl = null;
-    cursor.classList.remove("is-hover-text");
-  }, true);
 }
