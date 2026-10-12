@@ -50,10 +50,10 @@ function initIntro() {
   const tag = intro.querySelector("[data-intro-tag]");
 
   const tl = gsap.timeline({ onComplete: finish });
-  tl.to(mark, { opacity: 1, scale: 1, duration: .75, ease: "power3.out" })
-    .to(tag, { opacity: 1, duration: .4 }, "-=.25")
-    .to([mark, tag], { opacity: 0, duration: .4, ease: "power1.in" }, "+=.55")
-    .to(intro, { opacity: 0, duration: .5, ease: "power1.inOut" }, "-=.15");
+  tl.to(mark, { opacity: 1, scale: 1, duration: .4, ease: "power3.out" })
+    .to(tag, { opacity: 1, duration: .2 }, "-=.15")
+    .to([mark, tag], { opacity: 0, duration: .25, ease: "power1.in" }, "+=.15")
+    .to(intro, { opacity: 0, duration: .3, ease: "power1.inOut" }, "-=.1");
 }
 
 function playHeroReveal() {
@@ -704,7 +704,7 @@ function initEnquiryPopup() {
    the left and right of the cards; there are dots, swipe on touch
    screens and the left/right arrow keys too. Add more feedback by
    copying a .testimonial-card into [data-testimonial-track].
-   The cards per view are set by --per-view in css/style.css.
+   The cards per view are set by --per-view in css/.
    ========================================================= */
 function initTestimonialCarousel() {
   const root = document.querySelector("[data-testimonial-carousel]");

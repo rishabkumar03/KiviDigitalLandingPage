@@ -79,8 +79,8 @@ const MEDIA = {
   MEDIA.hero.video  = t(MEDIA.hero.video,  small ? "q_auto,w_720" : "q_auto,w_1280");
   MEDIA.hero.poster = t(MEDIA.hero.poster, "q_auto,f_auto,w_960");
   Object.values(MEDIA.services).forEach((s) => { s.video = t(s.video, "q_auto,w_640"); });
-  Object.values(MEDIA.work).forEach((w) => { w.image = t(w.image, "q_auto,f_auto,w_400"); });
-  Object.values(MEDIA.team).forEach((m) => { m.image = t(m.image, "q_auto,f_auto,w_500"); });
+  Object.values(MEDIA.work).forEach((w) => { w.image = t(w.image, "q_auto,f_auto,w_300"); });
+  Object.values(MEDIA.team).forEach((m) => { m.image = t(m.image, "q_auto,f_auto,w_300"); });
   Object.keys(MEDIA.testimonialLogos).forEach((k) => {
     MEDIA.testimonialLogos[k] = t(MEDIA.testimonialLogos[k], "q_auto,f_auto,w_96");
   });
@@ -143,12 +143,14 @@ function applyMedia() {
   if (MEDIA.hero.poster) document.querySelector(".hero-media")?.classList.add("has-poster");
 
   // Work
-  setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");
-  setSrc("[data-media='work-niwasa']", MEDIA.work.niwasa.image, "background");
-  setSrc("[data-media='work-mine-portal']", MEDIA.work.minePortal.image, "background");
-  setSrc("[data-media='work-dhruvi-events']", MEDIA.work.dhruviEvents.image, "background");
-  setSrc("[data-media='work-kivi']", MEDIA.work.tejas.image, "background");
-  setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
+  const loadWork = () => {
+    setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");
+    setSrc("[data-media='work-niwasa']", MEDIA.work.niwasa.image, "background");
+    setSrc("[data-media='work-mine-portal']", MEDIA.work.minePortal.image, "background");
+    setSrc("[data-media='work-dhruvi-events']", MEDIA.work.dhruviEvents.image, "background");
+    setSrc("[data-media='work-tejas']", MEDIA.work.tejas.image, "background");
+    setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
+  }
 
   // Testimonial client logos are handled above via setTestimonialLogo().
 
@@ -170,16 +172,29 @@ function applyMedia() {
     const placeholder = el.querySelector(".team-placeholder");
     if (placeholder) placeholder.style.display = "none";
   };
-  setTeamPhoto("team-01", MEDIA.team.member1);
-  setTeamPhoto("team-02", MEDIA.team.member2);
-  setTeamPhoto("team-03", MEDIA.team.member3);
-  setTeamPhoto("team-04", MEDIA.team.member4);
-  setTeamPhoto("team-05", MEDIA.team.member5);
-  setTeamPhoto("team-06", MEDIA.team.member6);
-  setTeamPhoto("team-07", MEDIA.team.member7);
-  setTeamPhoto("team-08", MEDIA.team.member8);
+
+  const loadTeam = () => {
+    setTeamPhoto("team-01", MEDIA.team.member1);
+    setTeamPhoto("team-02", MEDIA.team.member2);
+    setTeamPhoto("team-03", MEDIA.team.member3);
+    setTeamPhoto("team-04", MEDIA.team.member4);
+    setTeamPhoto("team-05", MEDIA.team.member5);
+    setTeamPhoto("team-06", MEDIA.team.member6);
+    setTeamPhoto("team-07", MEDIA.team.member7);
+    setTeamPhoto("team-08", MEDIA.team.member8);
+  } 
 
   document.querySelectorAll("[data-team-card]").forEach((card, index) => {
+    const lazyOnce = (selector, fn) => {
+      const el = document.querySelector(selector);
+      if (!el || !("IntersectionObserver" in window)) return fn();
+      new IntersectionObserver((entries, obs) => {
+        if (entries.some((e) => e.isIntersecting)) { fn(); obs.disconnect(); }
+      }, { rootMargin: "500px 0px" }).observe(el);
+    };
+    lazyOnce("#work", loadWork);
+    lazyOnce("#team", loadTeam);
+
     const cfg = MEDIA.team[`member${index + 1}`];
     if (!cfg) return;
     const name = card.querySelector(".team-meta strong");
