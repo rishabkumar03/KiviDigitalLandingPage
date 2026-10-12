@@ -67,10 +67,24 @@ const MEDIA = {
     member4: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787077340/ChatGPT_Image_Aug_18_2026_11_51_05_PM.png", name: "Jyoti", role: "Web Designer & Video Editor" },
     member5: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789369916/WhatsApp_Image_2026-09-14_at_12.35.39_PM.jpg", name: "Sagar", role: "Video Editor" },
     member6: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789370034/WhatsApp_Image_2026-09-14_at_12.39.12_PM.jpg", name: "Nikhil", role: "Video Editor" },
-    member7: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789372002/gaurav.jpg", name: "Gaurav", role: "Faculty member" },
+    member7: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1789372002/gaurav.jpg", name: "Gaurav", role: "Marketing Head" },
     member8: { image: "https://res.cloudinary.com/orpxplwd/image/upload/v1787076797/priyanshu.jpg", name: "Priyanshu", role: "Team coordinator" },
   },
 };
+
+(function optimizeMedia() {
+  const t = (u, x) => (u && u.includes("res.cloudinary.com") && u.includes("/upload/"))
+    ? u.replace("/upload/", `/upload/${x}/`) : u;
+  const small = window.matchMedia("(max-width: 900px)").matches;
+  MEDIA.hero.video  = t(MEDIA.hero.video,  small ? "q_auto,w_720" : "q_auto,w_1280");
+  MEDIA.hero.poster = t(MEDIA.hero.poster, "q_auto,f_auto,w_960");
+  Object.values(MEDIA.services).forEach((s) => { s.video = t(s.video, "q_auto,w_640"); });
+  Object.values(MEDIA.work).forEach((w) => { w.image = t(w.image, "q_auto,f_auto,w_400"); });
+  Object.values(MEDIA.team).forEach((m) => { m.image = t(m.image, "q_auto,f_auto,w_500"); });
+  Object.keys(MEDIA.testimonialLogos).forEach((k) => {
+    MEDIA.testimonialLogos[k] = t(MEDIA.testimonialLogos[k], "q_auto,f_auto,w_96");
+  });
+})();
 
 // Applies any URLs set above to the page. Elements without a matching
 // data-media attribute are left as the built-in placeholder design.
@@ -120,11 +134,13 @@ function applyMedia() {
         if (heroMedia) heroMedia.classList.remove("has-media");
         console.error("Hero video failed to load:", MEDIA.hero.video, v.error);
       }, { once: true });
-      v.load();
-      v.play().then(reveal).catch(() => {});
+      const startHero = () => { v.load(); v.play().then(reveal).catch(() => {}); };
+        if (document.readyState === "complete") startHero();
+        else window.addEventListener("load", () => setTimeout(startHero, 300), { once: true });
     }
   }
   setSrc("[data-media='hero-poster']", MEDIA.hero.poster, "poster");
+  if (MEDIA.hero.poster) document.querySelector(".hero-media")?.classList.add("has-poster");
 
   // Work
   setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");

@@ -1,5 +1,3 @@
-window.CONTACT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwscGs5gs8xxoR0qkMMOxaPPPkVMC-tVwE2p1-kHRfMZ_UBiYCCgpBmzri45W10SETC/exec"; // my Web app URL
-
 /* =========================================================
    KIVI DIGITAL — main.js
    Intro sequence, nav, scroll reveals, WHAT WE DO media,
@@ -11,18 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
   initNavbar();
   initNavPill();
   initNavDropdowns();
-  initFlipCardsTouch();
   initFlipCards();
   initMobileMenu();
   initHoverAnimText();
   initScrollReveals();
   initWhatWeDo();
-  initServiceGraphs();
   initLightbox();
   initTestimonialCarousel();
   initEnquiryPopup();
   initContactForm();
   initEyeFollowButtons();
+  initLottieHover();
+  initLazyLottie();
 });
 
 /* =========================================================
@@ -173,22 +171,21 @@ function initNavDropdowns() {
   });
 }
 
-function initFlipCardsTouch() {
-  document.querySelectorAll('.sec-services .wwd-item').forEach((card) => {
-    card.addEventListener('click', (e) => {
-      if (window.matchMedia('(hover: hover)').matches) return;
-      e.preventDefault();
-      card.classList.toggle('is-flipped');
-    });
-  });
-}
-
 function initFlipCards() {
   const cards = document.querySelectorAll('[data-wwd-flip]');
   const reduced = prefersReducedMotion();
   const canHover = window.matchMedia('(hover: hover)').matches;
 
   cards.forEach((card) => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('is-flipped');
+      }
+    });
+
     card.addEventListener('click', () => {
       card.classList.toggle('is-flipped');
     });
@@ -241,13 +238,6 @@ function initScrollReveals() {
       scrollTrigger: { trigger: el, start: "top 90%" },
     });
   });
-
-  gsap.utils.toArray(".testimonial-card").forEach((card, i) => {
-    gsap.to(card, {
-      opacity: 1, y: 0, duration: .6, ease: "power2.out", delay: i * .08,
-      scrollTrigger: { trigger: card, start: "top 92%" },
-    });
-  });
 }
 
 /* =========================================================
@@ -285,18 +275,51 @@ function wireVideo(videoEl, container, url) {
   }
 }
 
+// Cloudinary first-frame JPG of a video URL (used as the static look)
+function videoPoster(url) {
+  if (!url || !url.includes("/video/upload/")) return "";
+  return url.replace("/upload/", "/upload/so_0,w_640,q_auto/").replace(/\.\w+$/, ".jpg");
+}
+
 function initWhatWeDo() {
   const items = document.querySelectorAll("[data-wwd-item]");
   if (!items.length) return;
+  const canHover = window.matchMedia("(hover: hover)").matches;
 
   items.forEach((item) => {
     const media = item.querySelector(".wwd-media");
     if (!media) return;
-    const key = media.dataset.media;
-    const cfg = getServiceConfigByKey(key);
+    const cfg = getServiceConfigByKey(media.dataset.media);
     const video = media.querySelector("video");
-    if (cfg && cfg.video) {
-      wireVideo(video, media, cfg.video);
+
+    if (cfg && cfg.video && video) {
+      const poster = videoPoster(cfg.video);
+      if (poster) video.poster = poster;
+      else video.preload = "metadata";          // fallback for non-Cloudinary URLs
+      media.classList.add("has-media");         // show the poster right away
+
+      let loaded = false;
+      const play = () => {
+        if (!loaded) {
+          loaded = true;
+          const src = video.querySelector("source");
+          if (src) src.src = cfg.video;
+          video.load();
+        }
+        video.play().catch(() => {});
+      };
+      const stop = () => video.pause();
+
+      item.addEventListener("focusin", play);
+      item.addEventListener("focusout", stop);
+      if (canHover) {
+        item.addEventListener("mouseenter", play);
+        item.addEventListener("mouseleave", stop);
+      } else if ("IntersectionObserver" in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((e) => (e.isIntersecting ? play() : stop()));
+        }, { threshold: 0.6 }).observe(media);
+      }
     } else if (cfg && cfg.image) {
       media.style.backgroundImage = `url('${cfg.image}')`;
       media.classList.add("has-media");
@@ -449,95 +472,8 @@ function initLightbox() {
   });
 }
 
-/* =========================================================
-   PICK A STOP — six services with always-visible animated graphs
-   built with plain SVG — no charting library.
-   ========================================================= */
-const SERVICE_GRAPH_DATA = {
-  "service-video-editing": { kind: "line", points: [100, 88, 74, 66, 60, 55, 52] },
-  "service-content-creation": { kind: "bar", points: [30, 42, 55, 68, 80, 95] },
-  "service-graphic-design": { kind: "line", points: [20, 28, 38, 52, 70, 90] },
-  "service-web-development": { kind: "bar", points: [100, 42, 16] },
-  "service-social-media": { kind: "line", points: [24, 30, 26, 44, 40, 58, 70] },
-  "service-seo-ads": { kind: "line", points: [15, 22, 30, 42, 58, 76] },
-};
-
 function prefersReducedMotion() {
   return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-let serviceGraphId = 0;
-
-function svgLineChart(points, accent) {
-  const w = 280, h = 110, pad = 8;
-  const gradientId = `serviceGraphFill${++serviceGraphId}`;
-  const max = Math.max(...points), min = Math.min(...points);
-  const range = (max - min) || 1;
-  const stepX = (w - pad * 2) / (points.length - 1);
-  const coords = points.map((v, i) => [
-    pad + i * stepX,
-    pad + (h - pad * 2) * (1 - (v - min) / range),
-  ]);
-  const d = coords.map((c, i) => (i === 0 ? `M${c[0].toFixed(1)},${c[1].toFixed(1)}` : `L${c[0].toFixed(1)},${c[1].toFixed(1)}`)).join(" ");
-  const area = `${d} L${coords[coords.length - 1][0].toFixed(1)},${h - pad} L${coords[0][0].toFixed(1)},${h - pad} Z`;
-  const dots = coords.map((c) => `<circle class="orb-graph-dot" cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="4"></circle>`).join("");
-  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${accent}" stop-opacity=".8"/>
-      <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
-    </linearGradient></defs>
-    <path class="orb-graph-area" d="${area}"></path>
-    <path class="orb-graph-line" data-orb-path d="${d}"></path>
-    ${dots}
-  </svg>`;
-}
-
-function svgBarChart(points) {
-  const w = 280, h = 110, pad = 8, gap = 10;
-  const max = Math.max(...points);
-  const n = points.length;
-  const barW = (w - pad * 2 - gap * (n - 1)) / n;
-  const bars = points.map((v, i) => {
-    const barH = (h - pad * 2) * (v / max);
-    const x = pad + i * (barW + gap);
-    const y = h - pad - barH;
-    return `<rect class="orb-bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" rx="4" style="transition-delay:${i * 70}ms;"></rect>`;
-  }).join("");
-  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
-}
-
-function animateServiceGraphLine(container) {
-  const path = container.querySelector("[data-orb-path]");
-  if (!path) return;
-  if (prefersReducedMotion()) return;
-  const len = path.getTotalLength();
-  path.style.strokeDasharray = String(len);
-  path.style.strokeDashoffset = String(len);
-  if (typeof gsap !== "undefined") {
-    gsap.to(path, { strokeDashoffset: 0, duration: 1.05, ease: "power2.out", delay: .1 });
-  } else {
-    path.style.transition = "stroke-dashoffset 900ms ease .1s";
-    requestAnimationFrame(() => requestAnimationFrame(() => { path.style.strokeDashoffset = "0"; }));
-  }
-}
-
-function initServiceGraphs() {
-  document.querySelectorAll("[data-service-graph]").forEach((container) => {
-    const content = SERVICE_GRAPH_DATA[container.dataset.serviceGraph];
-    if (!content) return;
-
-    container.innerHTML = content.kind === "bar"
-      ? svgBarChart(content.points)
-      : svgLineChart(content.points, "currentColor");
-    container.setAttribute("data-lightbox-trigger", "");
-    container.setAttribute("data-lightbox-type", "svg");
-    const titleEl = container.closest(".road-service")?.querySelector(".road-service-title");
-    container.setAttribute("data-lightbox-title", titleEl ? titleEl.textContent.trim() : "Service Graph");
-
-    if (content.kind === "line") {
-      requestAnimationFrame(() => animateServiceGraphLine(container));
-    }
-  });
 }
 
 /* =========================================================
@@ -647,6 +583,7 @@ function initEnquiryPopup() {
 
   const sourceForm = document.querySelector("[data-contact-form]");
   if (!sourceForm) return;
+  if (window.matchMedia("(max-width: 900px)").matches) return;
   try { if (sessionStorage.getItem(STORAGE_KEY)) return; } catch (e) {}
 
   // --- build the popup from a copy of the page's contact card ------
@@ -972,7 +909,7 @@ function initEyeFollowButtons() {
     }));
 
     // Natural randomized blinking schedule
-    if (blinking) {
+    if (blinking && window.matchMedia("(hover: hover)").matches) {
       const scheduleBlink = () => {
         const delay = (3 + Math.random() * 3.5) * 1000;
         setTimeout(() => {
@@ -1040,8 +977,37 @@ function initEyeFollowButtons() {
       });
     });
 
+    if (window.matchMedia("(hover: hover)").matches)
     requestAnimationFrame(render);
   }
 
   requestAnimationFrame(render);
+}
+
+function initLottieHover() {
+  if (!("IntersectionObserver" in window)) return;
+  document.querySelectorAll(".process-step lottie-player").forEach((player) => {
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { if (player.play) player.play(); }
+        else { if (player.pause) player.pause(); }
+      });
+    }, { threshold: 0.2 }).observe(player);
+  });
+}
+
+function initLazyLottie() {
+  const section = document.querySelector("#process");
+  if (!section) return;
+  let loaded = false;
+  const load = () => {
+    if (loaded) return; loaded = true;
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js";
+    document.head.appendChild(s);
+  };
+  if (!("IntersectionObserver" in window)) { load(); return; }
+  new IntersectionObserver((entries, obs) => {
+    if (entries.some((e) => e.isIntersecting)) { load(); obs.disconnect(); }
+  }, { rootMargin: "600px 0px" }).observe(section);
 }

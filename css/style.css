@@ -458,6 +458,8 @@ button.hover-anim:not(:disabled):hover {
 .hero-media::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg,rgba(23,26,22,.2),transparent 25%),linear-gradient(180deg,rgba(23,26,22,.12),transparent 35%,rgba(23,26,22,.42)); pointer-events: none; }
 .hero-media.has-media video { opacity: 1; }
 .hero-media.has-media .hero-fallback-art { display: none; }
+.hero-media.has-poster video { opacity: 1; }
+.hero-media.has-poster .hero-fallback-art { display: none; }
 .hero-media-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg,transparent 40%,rgba(13,18,17,.45)); pointer-events: none; }
 .hero-showreel-control { position: absolute; z-index: 2; left: 50%; top: 50%; display: flex; flex-direction: column; align-items: center; gap: 12px; transform: translate(-50%,-50%); color: var(--cream-text); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
 .hero-play { display: grid; place-items: center; width: 68px; height: 68px; border: 1px solid rgba(244,243,234,.72); border-radius: 50%; background: rgba(23,26,22,.16); backdrop-filter: blur(5px); }
@@ -770,7 +772,7 @@ button.hover-anim:not(:disabled):hover {
 .footer-col a:hover { color: var(--lime); }
 .footer-col li { font-size: 13.5px; color: rgba(244,243,234,.74); }
 .footer-subscribe { display: flex; gap: 8px; }
-.footer-subscribe button:hover { transform: translateY (-2px); background: #d8f08a }
+.footer-subscribe button:hover { transform: translateY(-2px); background: #d8f08a }
 .footer-socials { display: flex; gap: 10px; margin-top: 16px; }
 .footer-social-link { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(244,243,234,.08); color: var(--cream-text); transition: transform 200ms var(--ease), background 200ms var(--ease), color 200ms var(--ease); }
 .footer-social-link:hover { transform: translateY(-3px); background: var(--lime); color: var(--dark-text); }
@@ -1953,35 +1955,6 @@ body {
   opacity: 1;
   transform: translate(0, -50%);
 }
-.sec-team .team-social span {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #2f8ee8;
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  box-shadow: 0 8px 16px rgba(47,142,232,.30);
-}
-.sec-team .team-social::after {
-  content: "�";
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  margin: 4px auto 0;
-  background: #2f8ee8;
-  color: #fff;
-  font-size: 25px;
-  line-height: 1;
-  border: 3px solid #fff;
-  box-shadow: 0 8px 16px rgba(47,142,232,.28);
-  transform: rotate(45deg);
-  text-align: center;
-}
 
 @media (max-width: 1100px) {
 }
@@ -2003,19 +1976,6 @@ body {
 }
 
 /* Team cards: clean circular profile cards */
-.sec-team .team-social {
-  position: absolute;
-  right: -12px;
-  top: 42%;
-  z-index: 3;
-  display: none !important;
-  flex-direction: column;
-  gap: 9px;
-  opacity: 0;
-  transform: translate(10px, -50%);
-  transition: opacity 260ms var(--ease), transform 260ms var(--ease);
-  pointer-events: none;
-}
 .sec-team .team-card,
 .sec-team .team-card:hover {
   position: relative;
@@ -3179,7 +3139,7 @@ body.enquiry-locked { overflow: hidden; }
 .testimonial-dots { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 34px; }
 .testimonial-dots[hidden] { display: none; }
 .testimonial-dot {
-  width: 8px; height: 8px; padding: 0; border-radius: 999px;
+  width: 8px; height: 8px; padding: 12px; background-clip: content-box; border-radius: 999px;
   background: rgba(244,243,234,.28);
   transition: width 260ms var(--ease), background 260ms var(--ease);
 }
@@ -3419,3 +3379,58 @@ body.enquiry-locked { overflow: hidden; }
   .sec-contact .kv-scene .cta-mascot { animation: none; }
   .sec-contact .kv-star { animation: none; }
 }
+
+/* =========================================================
+   MOBILE / TOUCH PERFORMANCE
+   Paste at the very END of css/style.css (it must come last).
+   Applies only to touch devices and screens up to 900px wide,
+   so your laptop design is unchanged.
+   ========================================================= */
+@media (hover: none), (max-width: 900px) {
+
+  /* 1. Remove every backdrop-filter. This is the biggest cause of lag:
+        the site has dozens of blurred cards, and the navbar re-blurs on every scroll frame. */
+  *, *::before, *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  /* Without the blur, make the see-through surfaces more solid so text stays readable */
+  .navbar { background: rgba(6, 12, 2, .96); }
+  .lightbox-backdrop,
+  .enquiry-backdrop { background: rgba(4, 9, 20, .92); }
+  .sec-contact .contact-form-card,
+  .enquiry-modal .contact-form-card { background: rgba(244, 243, 234, .96); }
+
+  /* 2. A fixed background with several gradients repaints on every scroll on phones */
+  body { background-attachment: scroll; }
+
+  /* 3. Infinite decorative animations off (they keep the GPU busy all the time) */
+  .kv-star,
+  .kv-meteor,
+  .sec-contact .kv-star { animation: none !important; filter: none !important; }
+  .sec-process .process-row::before { animation: none; }
+  .sec-contact .kv-scene .cta-mascot { animation: none; filter: none; }
+
+  /* 4. Blend modes and drop-shadow filters are expensive on phones */
+  .hero-noise { display: none; }
+  .brand-mark,
+  .hero-logo-img,
+  .intro-mark { filter: none; }
+
+  /* 5. Lighter shadows on all glass cards (one variable controls most of them) */
+  :root {
+    --card-glass-shadow: 0 8px 18px rgba(0, 0, 0, .4);
+    --card-glass-hover-shadow: 0 8px 18px rgba(0, 0, 0, .4);
+  }
+  .whatsapp-fab { box-shadow: 0 6px 14px rgba(37, 211, 102, .35); }
+
+  /* 6. Tap-hover lifts stick on touch screens and re-composite large cards; keep them still */
+  .sec-testimonials .testimonial-card:hover,
+  .sec-team .team-card:hover,
+  .sec-process .process-step:hover,
+  .sec-services .wwd-item:hover,
+  .sec-contact .contact-illustration:hover,
+  .about-media:hover { transform: none; }
+}
+
+body.intro-locked .hero-panel { opacity: 0; }
