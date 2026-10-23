@@ -102,12 +102,34 @@ function initMobileMenu() {
   const btn = document.querySelector("[data-hamburger]");
   const panel = document.querySelector("[data-mobile-nav]");
   if (!btn || !panel) return;
-  const close = () => { panel.classList.remove("is-open"); btn.setAttribute("aria-expanded", "false"); };
-  btn.addEventListener("click", () => {
-    const open = panel.classList.toggle("is-open");
+  const closeBtn = panel.querySelector("[data-mobile-menu-close]");
+  const backdrop = document.querySelector("[data-mobile-nav-backdrop]");
+  const setOpen = (open) => {
+    panel.classList.toggle("is-open", open);
+    panel.inert = !open;
+    panel.setAttribute("aria-hidden", String(!open));
     btn.setAttribute("aria-expanded", String(open));
+    btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    if (backdrop) {
+      backdrop.classList.toggle("is-open", open);
+      backdrop.setAttribute("aria-hidden", String(!open));
+    }
+  };
+  const close = (restoreFocus = false) => {
+    setOpen(false);
+    if (restoreFocus) btn.focus({ preventScroll: true });
+  };
+  btn.addEventListener("click", () => {
+    const open = btn.getAttribute("aria-expanded") !== "true";
+    setOpen(open);
+    if (open && closeBtn) closeBtn.focus({ preventScroll: true });
   });
-  panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+  if (closeBtn) closeBtn.addEventListener("click", () => close(true));
+  if (backdrop) backdrop.addEventListener("click", () => close(true));
+  panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => close()));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.classList.contains("is-open")) close(true);
+  });
 }
 
 function initNavPill() {
@@ -448,7 +470,7 @@ function initLightbox() {
     } else if (type === "image") {
       // Support both background-image cards and real <img> elements.
       const imgEl = trigger.querySelector("img");
-      let src = imgEl ? (imgEl.currentSrc || imgEl.src) : "";
+      let src = trigger.dataset.lightboxSrc || (imgEl ? (imgEl.currentSrc || imgEl.src) : "");
       if (!src) {
         const bg = getComputedStyle(trigger).backgroundImage;
         const match = /url\(["']?(.*?)["']?\)/.exec(bg);
@@ -507,6 +529,20 @@ function initContactForm() {
       if (err) err.textContent = message;
     };
 
+    // Restrict both the on-page form and its enquiry-modal clone to ten digits.
+    form.querySelectorAll('input[name="phone"]').forEach((phoneInput) => {
+      phoneInput.addEventListener("paste", (event) => {
+        const pastedDigits = (event.clipboardData?.getData("text") || "").replace(/\D/g, "");
+        if (pastedDigits.length > 10) {
+          event.preventDefault();
+          phoneInput.value = "";
+        }
+      });
+      phoneInput.addEventListener("input", () => {
+        phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+      });
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -528,6 +564,9 @@ function initContactForm() {
           valid = false;
         } else if (input.type === "email" && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
           setFieldError(field, "Please enter a valid email.");
+          valid = false;
+        } else if (input.name === "phone" && !/^[6-9]\d{9}$/.test(input.value.trim())) {
+          setFieldError(field, "Enter a 10-digit mobile number starting with 6, 7, 8, or 9.");
           valid = false;
         }
       });

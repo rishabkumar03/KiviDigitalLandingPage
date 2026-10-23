@@ -32,23 +32,27 @@ const MEDIA = {
   },
 
   work: {
-    itHub:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg", logo: "" },
-    niwasa:     { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg", logo: "" },
-    minePortal: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855408/minePortalWebLogo.jpg", logo: "" },
+    itHub:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792753882/itHubLogo.jpg", logo: "" },
+    niwasa:     { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752112/KIVI_Square.jpg", logo: "" },
+    minePortal: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752316/Mine_Portal_Teal_Circle_Logo.png", logo: "" },
     dhruviEvents: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790252820/dhruviLogo.jpg", logo: "" },
-    tejas:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855355/TejasWebLogo.jpg", logo: "" },
-    ranchiRise: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg", logo: "" },
+    tejas:      { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752371/WhatsApp_Image_2026-10-23_at_1.55.20_PM.jpg", logo: "" },
+    ranchiRise: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752457/WhatsApp_Image_2026-10-23_at_1.56.22_PM.jpg", logo: "" },
+    theBurgerCompany: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752972/KIVI_Square_1.jpg", logo: "" },
+    solarWave: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752992/solar.jpg", logo: "" }
   },
 
   // Client logos shown above each testimonial. Paste a Cloudinary (or
   // any) image URL and it replaces the dashed placeholder automatically.
   testimonialLogos: {
-    itHub: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855441/ITHubInstitueWebLogo.jpg",
-    niwasa: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855393/niwasaWebLogo.jpg",
-    ranchiRise: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855374/ranchiRiseWebLogo.jpg",
-    minePortal: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855408/minePortalWebLogo.jpg",
+    itHub: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792753882/itHubLogo.jpg",
+    niwasa: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752112/KIVI_Square.jpg",
+    minePortal: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752316/Mine_Portal_Teal_Circle_Logo.png",
     dhruviEvents: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790252820/dhruviLogo.jpg",
-    tejas: "https://res.cloudinary.com/s9nmor1b/image/upload/v1788855355/TejasWebLogo.jpg"
+    tejas: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752371/WhatsApp_Image_2026-10-23_at_1.55.20_PM.jpg",
+    ranchiRise: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752457/WhatsApp_Image_2026-10-23_at_1.56.22_PM.jpg",
+    theBurgerCompany: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752972/KIVI_Square_1.jpg",
+    solarWave: "https://res.cloudinary.com/s9nmor1b/image/upload/v1792752992/solar.jpg"
   },
 
   cta: {
@@ -104,10 +108,12 @@ function applyMedia() {
   };
   setTestimonialLogo('testimonial-it-hub-logo', MEDIA.testimonialLogos.itHub);
   setTestimonialLogo('testimonial-niwasa-logo', MEDIA.testimonialLogos.niwasa);
-  setTestimonialLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise);
   setTestimonialLogo('testimonial-mine-portal-logo', MEDIA.testimonialLogos.minePortal);
   setTestimonialLogo('testimonial-dhruvi-events-logo', MEDIA.testimonialLogos.dhruviEvents);
   setTestimonialLogo('testimonial-tejas-logo', MEDIA.testimonialLogos.tejas);
+  setTestimonialLogo('testimonial-ranchi-rise-logo', MEDIA.testimonialLogos.ranchiRise);
+  setTestimonialLogo('testimonial-the-burger-company-logo', MEDIA.testimonialLogos.theBurgerCompany);
+  setTestimonialLogo('testimonial-solar-wave-logo', MEDIA.testimonialLogos.solarWave)
 
   const setSrc = (selector, url, attr = "src") => {
     if (!url) return;
@@ -144,12 +150,14 @@ function applyMedia() {
 
   // Work
   const loadWork = () => {
-    setSrc("[data-media='work-it-hub']", MEDIA.work.itHub.image, "background");
-    setSrc("[data-media='work-niwasa']", MEDIA.work.niwasa.image, "background");
-    setSrc("[data-media='work-mine-portal']", MEDIA.work.minePortal.image, "background");
-    setSrc("[data-media='work-dhruvi-events']", MEDIA.work.dhruviEvents.image, "background");
-    setSrc("[data-media='work-tejas']", MEDIA.work.tejas.image, "background");
-    setSrc("[data-media='work-ranchi-rise']", MEDIA.work.ranchiRise.image, "background");
+    Object.entries(MEDIA.work).forEach(([key, item]) => {
+      const slug = key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+      const el = document.querySelector(`[data-media='work-${slug}']`);
+      if (!el || !item.image) return;
+      el.style.setProperty("--work-logo-image", `url('${item.image}')`);
+      el.dataset.lightboxSrc = item.image;
+      el.classList.add("has-media");
+    });
   }
 
   // Testimonial client logos are handled above via setTestimonialLogo().

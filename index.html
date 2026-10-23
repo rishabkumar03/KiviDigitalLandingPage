@@ -76,10 +76,10 @@
         <nav aria-label="Primary">
           <ul class="nav-links" data-nav-links>
             <li class="nav-item has-dropdown"><a href="#services" data-nav-link aria-haspopup="true"><span class="hover-anim" data-text="SERVICES"><span>SERVICES</span></span><svg class="nav-caret" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-              <div class="nav-dropdown nav-dropdown--wide"><div class="nav-dropdown-panel"><div class="nav-dd-col"><h4>Creative &amp; Design</h4><ul><li><a href="#services">Branding</a></li><li><a href="#services">Logo Making</a></li><li><a href="#services">Graphic Designing</a></li><li><a href="#services">Print Designs</a></li><li><a href="#services">Posters</a></li><li><a href="#services">Video Shoot</a></li><li><a href="#services">Video Editing</a></li></ul></div><div class="nav-dd-col"><h4>Marketing &amp; Digital</h4><ul><li><a href="#services">Content Creation</a></li><li><a href="#services">Content Marketing</a></li><li><a href="#services">Social Media Management</a></li><li><a href="#services">Meta &amp; Google Ads</a></li><li><a href="#services">SEO</a></li><li><a href="#services">Web Development</a></li></ul></div></div></div>
+              <div class="nav-dropdown nav-dropdown--wide"><div class="nav-dropdown-panel"><div class="nav-dd-col"><h4>Creative &amp; Design</h4><ul><li><a href="#services">Branding</a></li><li><a href="#services">Logo Making</a></li><li><a href="#services">Graphic Designing</a></li><li><a href="#services">Print Designs</a></li><li><a href="#services">Posters</a></li><li><a href="#services">Video Shoot</a></li><li><a href="#services">Video Editing</a></li></ul></div><div class="nav-dd-col"><h4>Marketing &amp; Digital</h4><ul><li><a href="#services">Content Creation</a></li><li><a href="#services">Content Marketing</a></li><li><a href="#services">Social Media Management</a></li><li><a href="#services">Meta &amp; Google Ads</a></li><li><a href="#services">Performance Marketing</a></li><li><a href="#services">SEO</a></li><li><a href="#services">Web Development</a></li></ul></div></div></div>
             </li>
             <li class="nav-item has-dropdown"><a href="#work" data-nav-link aria-haspopup="true"><span class="hover-anim" data-text="WORK"><span>WORK</span></span><svg class="nav-caret" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-              <div class="nav-dropdown"><div class="nav-dropdown-panel"><div class="nav-dd-col"><h4>Selected Work</h4><ul><li><a href="#work">IT Hub Institute<small>Education</small></a></li><li><a href="#work">Niwasa Interiors<small>Interior Design</small></a></li><li><a href="#work">Mine Portal<small>Education</small></a></li><li><a href="#work">Dhruvi Events<small>Event Planner</small></a></li><li><a href="#work">Tejas<small>Finance Agency</small></a></li><li><a href="#work">Ranchi Rise Realty<small>Real Estate</small></a></li></ul></div></div></div>
+              <div class="nav-dropdown"><div class="nav-dropdown-panel"><div class="nav-dd-col"><h4>Selected Work</h4><ul><li><a href="#work">IT Hub Institute<small>Education</small></a></li><li><a href="#work">Niwasa Interiors<small>Interior Design</small></a></li><li><a href="#work">Mine Portal<small>Education</small></a></li><li><a href="#work">Dhruvi Events<small>Event Planner</small></a></li><li><a href="#work">The Burger Company<small>Food Chain</small></a></li><li><a href="#work">Solar Wave<small>Solar Energy Solutions</small></a></li><li><a href="#work">Tejas<small>Finance Agency</small></a></li><li><a href="#work">Ranchi Rise Realty<small>Real Estate</small></a></li></ul></div></div></div>
             </li>
             <li class="nav-item has-dropdown"><a href="#about" data-nav-link aria-haspopup="true"><span class="hover-anim" data-text="ABOUT US"><span>ABOUT US</span></span><svg class="nav-caret" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
               <div class="nav-dropdown"><div class="nav-dropdown-panel"><div class="nav-dd-col"><h4>About Us</h4><ul><li><a href="#about">Who we are</a></li><li><a href="#testimonials">What clients say</a></li><li><a href="#work">Brands we've served</a></li></ul></div></div></div>
@@ -109,8 +109,12 @@
       </div>
     </header>
 
-    <!-- Mobile nav panel -->
-    <nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Mobile">
+    <!-- Mobile nav drawer and dismissible backdrop -->
+    <button class="mobile-nav-backdrop" type="button" data-mobile-nav-backdrop aria-label="Close menu" aria-hidden="true" tabindex="-1"></button>
+    <nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Mobile navigation" aria-hidden="true" inert>
+      <button class="mobile-nav-close" type="button" data-mobile-menu-close aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
       <a href="#services">Services</a>
       <a href="#work">Work</a>
       <a href="#about">About Us</a>
@@ -372,6 +376,36 @@
             </article>
             <article class="work-card">
               <div class="work-card-visual">
+                <button class="work-card-media kv-clickable" aria-label="View The Burger Company logo" data-media="work-the-burger-company" data-lightbox-trigger data-lightbox-type="image" data-lightbox-title="The Burger Company"></button>
+                <div class="work-card-socials" aria-label="The Burger Company social links">
+                  <a href="https://www.facebook.com/TheBurgerCompanyElanEpic" target="_blank" rel="noopener noreferrer" aria-label="The Burger Company on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M15.9 8.6h-1.7c-.5 0-.9.4-.9.9v1.6h2.6l-.3 2.5h-2.3V19h-2.6v-5.4H8.9v-2.5h1.8V9.3c0-1.9 1.2-3.3 3.3-3.3h1.9v2.6z"/></svg></a>
+                  <a href="https://www.instagram.com/theburgercompany_elanepic/" target="_blank" rel="noopener noreferrer" aria-label="The Burger Company on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igWork4" gradientUnits="userSpaceOnUse" x1="1" y1="23" x2="23" y2="1"><stop offset="0" stop-color="#F58529"/><stop offset=".55" stop-color="#DD2A7B"/><stop offset="1" stop-color="#8134AF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="6" fill="url(#igWork4)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.4" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="17.4" cy="6.6" r="1.1" fill="#fff"/></svg></a>
+                  <a href="" target="_blank" rel="noopener noreferrer" aria-label="The Burger Company on YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="5" fill="#FF0000"/><path d="M10 8.5l6 3.5-6 3.5z" fill="#fff"/></svg></a>
+                </div>
+              </div>
+              <div class="work-card-foot">
+                <span class="work-logo">The Burger Company</span>
+                <span class="work-name font-display">TBC Elan Epic</span>
+                <span class="work-cat">Food Chain</span>
+              </div>
+            </article>
+            <article class="work-card">
+              <div class="work-card-visual">
+                <button class="work-card-media kv-clickable" aria-label="View Solar Wave logo" data-media="work-solar-wave" data-lightbox-trigger data-lightbox-type="image" data-lightbox-title="Solar Wave"></button>
+                <div class="work-card-socials" aria-label="Solar Wave social links">
+                  <a href="https://www.facebook.com/profile.php?id=61595588662902" target="_blank" rel="noopener noreferrer" aria-label="Solar Wave on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M15.9 8.6h-1.7c-.5 0-.9.4-.9.9v1.6h2.6l-.3 2.5h-2.3V19h-2.6v-5.4H8.9v-2.5h1.8V9.3c0-1.9 1.2-3.3 3.3-3.3h1.9v2.6z"/></svg></a>
+                  <a href="https://www.instagram.com/solarwaveranchi/reels/" target="_blank" rel="noopener noreferrer" aria-label="Solar Wave on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igWork4" gradientUnits="userSpaceOnUse" x1="1" y1="23" x2="23" y2="1"><stop offset="0" stop-color="#F58529"/><stop offset=".55" stop-color="#DD2A7B"/><stop offset="1" stop-color="#8134AF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="6" fill="url(#igWork4)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.4" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="17.4" cy="6.6" r="1.1" fill="#fff"/></svg></a>
+                  <a href="https://youtube.com/@solarwaveranchi?si=ePunkpidrQLAX3_b" target="_blank" rel="noopener noreferrer" aria-label="Solar Wave on YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="5" fill="#FF0000"/><path d="M10 8.5l6 3.5-6 3.5z" fill="#fff"/></svg></a>
+                </div>
+              </div>
+              <div class="work-card-foot">
+                <span class="work-logo">Solar Wave</span>
+                <span class="work-name font-display">Solar Wave</span>
+                <span class="work-cat">Solar Energy Solutions</span>
+              </div>
+            </article>
+            <article class="work-card">
+              <div class="work-card-visual">
                 <button class="work-card-media kv-clickable" aria-label="View Tejas logo" data-media="work-tejas" data-lightbox-trigger data-lightbox-type="image" data-lightbox-title="Tejas"></button>
                 <div class="work-card-socials" aria-label="Tejas social links">
                   <a href="" target="_blank" rel="noopener noreferrer" aria-label="Tejas on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M15.9 8.6h-1.7c-.5 0-.9.4-.9.9v1.6h2.6l-.3 2.5h-2.3V19h-2.6v-5.4H8.9v-2.5h1.8V9.3c0-1.9 1.2-3.3 3.3-3.3h1.9v2.6z"/></svg></a>
@@ -416,7 +450,7 @@
               <p class="section-sub reveal">KIVI DIGITAL is a creative digital studio in Ranchi - strategy, design and execution under one roof, so brands don't have to juggle five vendors to get one clear result.</p>
               <div class="about-stats reveal">
                 <div class="about-stat"><strong>10+</strong><span>Brands served</span></div>
-                <div class="about-stat"><strong>6</strong><span>Core disciplines</span></div>
+                <div class="about-stat"><strong>6+</strong><span>Core disciplines</span></div>
                 <div class="about-stat"><strong>Ranchi</strong><span>Based &amp; growing</span></div>
               </div>
             </div>
@@ -571,7 +605,7 @@
             </article>
 
 
-            <!-- Rahul S. -->
+            <!-- THE BURGER COMPANY -->
             <article class="testimonial-card reveal">
 
               <div class="testimonial-stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
@@ -582,19 +616,20 @@
 
               <div class="testimonial-foot">
                 <span class="testimonial-avatar" aria-hidden="true">
-                  <span class="testimonial-avatar-fallback">RS</span>
+                  <span class="testimonial-avatar-fallback">TBC</span>
+                  <img data-media="testimonial-the-burger-company-logo" src="" alt="">
                 </span>
 
                 <div>
-                  <span class="testimonial-name">Rahul S.</span>
-                  <span class="testimonial-role">Business Owner</span>
+                  <span class="testimonial-name">The Burger Company</span>
+                  <span class="testimonial-role">Food Chain</span>
                 </div>
               </div>
 
             </article>
 
 
-            <!-- PRIYA M. -->
+            <!-- SOLAR WAVE -->
             <article class="testimonial-card reveal">
 
               <div class="testimonial-stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
@@ -605,12 +640,13 @@
 
               <div class="testimonial-foot">
                 <span class="testimonial-avatar" aria-hidden="true">
-                  <span class="testimonial-avatar-fallback">PM</span>
+                  <span class="testimonial-avatar-fallback">SW</span>
+                  <img data-media="testimonial-solar-wave-logo" src="" alt="">
                 </span>
 
                 <div>
-                  <span class="testimonial-name">Priya M.</span>
-                  <span class="testimonial-role">Marketing Head</span>
+                  <span class="testimonial-name">Solar Wave</span>
+                  <span class="testimonial-role">Solar Energy Solutions</span>
                 </div>
               </div>
 
@@ -863,7 +899,7 @@
                   </div>
                   <div class="field">
                     <label for="h-email">Email</label>
-                    <input type="email" id="h-email" name="email" required />
+                    <input type="email" id="h-email" name="email" />
                     <p class="field-error" role="alert"></p>
                   </div>
                 </div>
@@ -871,7 +907,7 @@
                 <div class="form-row">
                   <div class="field">
                     <label for="h-phone">Phone</label>
-                    <input type="tel" id="h-phone" name="phone" required />
+                    <input type="tel" id="h-phone" name="phone" inputmode="numeric" autocomplete="tel-national" pattern="[6-9][0-9]{9}" minlength="10" maxlength="10" title="Enter a 10-digit Indian mobile number starting with 6, 7, 8, or 9" required />
                     <p class="field-error" role="alert"></p>
                   </div>
                   <div class="field">
@@ -892,7 +928,7 @@
 
                 <div class="field">
                   <label for="h-message">Message</label>
-                  <textarea id="h-message" name="message" required></textarea>
+                  <textarea id="h-message" name="message"></textarea>
                   <p class="field-error" role="alert"></p>
                 </div>
 
@@ -901,6 +937,34 @@
                 </button>
                 <div class="form-status" data-form-status role="status" aria-live="polite"></div>
               </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== LOCATION ===================== -->
+      <section class="location-section" id="location" aria-labelledby="location-title">
+        <div class="wrap">
+          <div class="location-heading">
+            <div>
+              <p class="eyebrow">08 &mdash; Find us in Ranchi</p>
+              <h2 class="cta-title font-display kv-hover-lime">
+                <span class="reveal-mask"><span>Visit</span></span>
+                <span class="reveal-mask"><span class="accent">Kivi Digital</span></span>
+              </h2>
+            </div>
+            <a class="location-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=23.3815679%2C85.2981258" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="location-card">
+            <div class="location-address">
+              <span class="location-pin" aria-hidden="true">⌖</span>
+              <p>1st Floor, Piska More, Shanti Sadan,<br />Ratu Rd, near Rangoli Sweets,<br />Ranchi, Jharkhand 834005</p>
+            </div>
+            <div class="location-map">
+              <iframe title="Map centered on Kivi Digital’s exact location in Ranchi" src="https://maps.google.com/maps?ll=23.3815679%2C85.2981258&amp;z=19&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1" aria-hidden="true"></iframe>
+              <span class="location-map-pin" aria-hidden="true">
+                <svg viewBox="0 0 36 48" focusable="false"><path d="M18 1C8.6 1 1 8.6 1 18c0 12 17 29 17 29s17-17 17-29C35 8.6 27.4 1 18 1Z" fill="currentColor"/><circle cx="18" cy="17" r="6.5" fill="#080808" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/></svg>
+              </span>
             </div>
           </div>
         </div>
@@ -959,6 +1023,7 @@
                 <li><a href="#services">Content Marketing</a></li>
                 <li><a href="#services">Social Media Management</a></li>
                 <li><a href="#services">Meta &amp; Google Ads</a></li>
+                <li><a href="#services">Performance Marketing</a></li>
                 <li><a href="#services">SEO</a></li>
                 <li><a href="#services">Web Development</a></li>
                 </ul>
@@ -1015,7 +1080,7 @@
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script defer src="js/media.min.js"></script>
-    <script defer src="js/main.min.js"></script>
+    <script defer src="js/media.js"></script>
+    <script defer src="js/main.js"></script>
   </body>
 </html>
