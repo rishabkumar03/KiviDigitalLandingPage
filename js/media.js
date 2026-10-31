@@ -20,15 +20,17 @@ const MEDIA = {
     poster: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790767064/ChatGPT_Image_Sep_30_2026_04_46_53_PM.png",
   },
 
-  // Each discipline in "WHAT WE DO" takes one looping video and one
-  // photo slot. Add one image URL to the `photos` array when needed.
+  // The six "WHAT WE DO" cards are photo-led. Replace each `image` URL below
+  // with your chosen still image; if it still points to an MP4, the card uses
+  // that video's first frame as a temporary poster. The optional `video`
+  // fields are retained for that fallback only.
   services: {
-    videoEditing:    { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764072/finalVideoEditing.mp4", image: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764072/finalVideoEditing.mp4", photos: [""] },
-    contentCreation: { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764117/finalContentCreation.mp4", image: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764117/finalContentCreation.mp4", photos: [""] },
-    graphicDesign:   { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764113/finalGraphicDesign.mp4", image: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764113/finalGraphicDesign.mp4", photos: [""] },
-    webDevelopment:  { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790682543/WebsiteDevelopment.mp4", image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790767064/ChatGPT_Image_Sep_30_2026_04_46_53_PM.png", photos: [""] },
-    socialMedia:     { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764117/finalSocialMedia.mp4", image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790767062/ChatGPT_Image_Sep_30_2026_04_43_55_PM.png", photos: [""] },
-    seoAds:          { video: "https://res.cloudinary.com/s9nmor1b/video/upload/v1790764115/finalSEO_ADS.mp4", image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1790767062/ChatGPT_Image_Sep_30_2026_04_44_05_PM.png", photos: [""] },
+    videoEditing:    { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793434924/brandIdentity_Rebranding.png", photos: [""] },
+    contentCreation: { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793435137/Gemini_Generated_Image_9ylmdj9ylmdj9ylm.png", photos: [""] },
+    graphicDesign:   { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793434916/Gemini_Generated_Image_rmkgi6rmkgi6rmkg.png", photos: [""] },
+    webDevelopment:  { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793434915/Gemini_Generated_Image_sl6r2wsl6r2wsl6r.png", photos: [""] },
+    socialMedia:     { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793434927/Gemini_Generated_Image_8thmi8thmi8thmi8.png", photos: [""] },
+    seoAds:          { image: "https://res.cloudinary.com/s9nmor1b/image/upload/v1793434916/Gemini_Generated_Image_opzyylopzyylopzy.png", photos: [""] },
   },
 
   work: {

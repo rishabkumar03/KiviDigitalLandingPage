@@ -263,7 +263,7 @@ function initScrollReveals() {
 }
 
 /* =========================================================
-   WHAT WE DO — six disciplines with one photo and one video per service
+   WHAT WE DO — six photo-led service cards
    ========================================================= */
 function getServiceConfigByKey(key) {
   if (typeof MEDIA === "undefined") return null;
@@ -278,25 +278,6 @@ function getServiceConfigByKey(key) {
   return map[key] || null;
 }
 
-/* Reliable "load → become visible" wiring, per Rule 22:
-   pause, set source, load(), wait for canplay/loadeddata, play(),
-   then reveal. Visibility (has-media) is applied on loadeddata
-   regardless of whether autoplay is allowed by the browser. */
-function wireVideo(videoEl, container, url) {
-  if (!videoEl || !url) return;
-  const source = videoEl.querySelector("source");
-  videoEl.pause();
-  if (source) source.src = url;
-  const reveal = () => { if (container) container.classList.add("has-media"); };
-  videoEl.addEventListener("loadeddata", reveal, { once: true });
-  videoEl.addEventListener("canplay", reveal, { once: true });
-  videoEl.load();
-  const playPromise = videoEl.play();
-  if (playPromise && playPromise.catch) {
-    playPromise.then(reveal).catch(() => { /* autoplay blocked — still becomes visible via loadeddata */ });
-  }
-}
-
 // Cloudinary first-frame JPG of a video URL (used as the static look)
 function videoPoster(url) {
   if (!url || !url.includes("/video/upload/")) return "";
@@ -306,45 +287,23 @@ function videoPoster(url) {
 function initWhatWeDo() {
   const items = document.querySelectorAll("[data-wwd-item]");
   if (!items.length) return;
-  const canHover = window.matchMedia("(hover: hover)").matches;
 
   items.forEach((item) => {
     const media = item.querySelector(".wwd-media");
     if (!media) return;
     const cfg = getServiceConfigByKey(media.dataset.media);
-    const video = media.querySelector("video");
-
-    if (cfg && cfg.video && video) {
-      const poster = videoPoster(cfg.video);
-      if (poster) video.poster = poster;
-      else video.preload = "metadata";          // fallback for non-Cloudinary URLs
-      media.classList.add("has-media");         // show the poster right away
-
-      let loaded = false;
-      const play = () => {
-        if (!loaded) {
-          loaded = true;
-          const src = video.querySelector("source");
-          if (src) src.src = cfg.video;
-          video.load();
-        }
-        video.play().catch(() => {});
-      };
-      const stop = () => video.pause();
-
-      item.addEventListener("focusin", play);
-      item.addEventListener("focusout", stop);
-      if (canHover) {
-        item.addEventListener("mouseenter", play);
-        item.addEventListener("mouseleave", stop);
-      } else if ("IntersectionObserver" in window) {
-        new IntersectionObserver((entries) => {
-          entries.forEach((e) => (e.isIntersecting ? play() : stop()));
-        }, { threshold: 0.6 }).observe(media);
-      }
-    } else if (cfg && cfg.image) {
-      media.style.backgroundImage = `url('${cfg.image}')`;
-      media.classList.add("has-media");
+    const image = media.querySelector("[data-service-image]");
+    const configuredImage = cfg && cfg.image;
+    const imageIsVideo = configuredImage && /\.(mp4|webm|mov)(?:$|[?#])/i.test(configuredImage);
+    const imageUrl = configuredImage && !imageIsVideo
+      ? configuredImage
+      : videoPoster(cfg && cfg.video);
+    if (image && imageUrl) {
+      image.src = imageUrl;
+      image.addEventListener("load", () => media.classList.add("has-media"), { once: true });
+      image.addEventListener("error", () => media.classList.remove("has-media"), { once: true });
+      if (image.complete && image.naturalWidth) media.classList.add("has-media");
+      image.dataset.lightboxSrc = imageUrl;
     }
 
     // One photo slot per discipline

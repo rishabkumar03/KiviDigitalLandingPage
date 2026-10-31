@@ -2248,7 +2248,7 @@ body {
 }
 .sec-process .process-step:hover {
   transform: translateY(-8px);
-  background: rgba(255,255,255,.62);
+  background: rgba(10, 10, 10, 0.62);
   box-shadow: var(--card-glass-hover-shadow);
   border-color: var(--sage-deep);
   border: var(--card-glass-hover-border);
@@ -3692,4 +3692,160 @@ body.intro-locked .hero-panel { opacity: 0; }
   .sec-process .process-media { width: 60px; height: 60px; }
   .testimonial-carousel { grid-template-columns: 34px minmax(0,1fr) 34px; column-gap: 5px; }
   .testimonial-nav { width: 32px; height: 32px; }
+}
+
+/* Services: still image first, with a smooth copy reveal on hover/focus. */
+.sec-services .wwd-flip {
+  aspect-ratio: 16 / 10;
+  perspective: none;
+  cursor: default;
+  outline: none;
+}
+.sec-services .wwd-flip-inner {
+  transform: none !important;
+  transform-style: flat;
+  transition: none;
+}
+.sec-services .wwd-flip-front,
+.sec-services .wwd-flip-back {
+  border-radius: 18px;
+  border: 1px solid rgba(127,173,20,.34);
+  box-shadow: 0 14px 34px rgba(0,0,0,.3);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.sec-services .wwd-flip-front {
+  padding: 0;
+  background: #080808;
+  display: block;
+}
+.sec-services .wwd-flip-front::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,.88) 52%, #000 100%);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 920ms cubic-bezier(.22,.72,.22,1);
+  pointer-events: none;
+}
+.sec-services .wwd-flip-front .wwd-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: inherit;
+  background: #111;
+}
+.sec-services .wwd-flip-front .wwd-media [data-service-image] {
+  transform: scale(1);
+  object-fit: cover;
+  transition: opacity 600ms ease, transform 1050ms cubic-bezier(.16,1,.3,1);
+}
+.sec-services .wwd-flip-caption {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-top: 1px solid rgba(127,173,20,.38);
+  border-radius: 0 0 17px 17px;
+  background: #000;
+  opacity: 1;
+  transform: none;
+  transition: opacity 380ms ease 140ms, transform 620ms cubic-bezier(.16,1,.3,1) 100ms;
+}
+.sec-services .wwd-flip-caption .wwd-index {
+  flex: 0 0 auto;
+  color: var(--lime);
+  background: rgba(127,173,20,.18);
+  border-color: rgba(127,173,20,.55);
+}
+.sec-services .wwd-flip-caption .wwd-title {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(.82rem, 1.12vw, 1rem);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(0,0,0,.98), 0 0 4px rgba(0,0,0,.95);
+}
+.sec-services .wwd-flip-back {
+  z-index: 2;
+  display: block;
+  padding: 20px;
+  transform: none;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 680ms ease 180ms, transform 760ms cubic-bezier(.16,1,.3,1) 120ms;
+  pointer-events: none;
+}
+.sec-services .wwd-flip-back .wwd-copy {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+  max-width: 40ch;
+  margin: 0;
+  color: rgba(255,255,255,.94);
+  font-size: clamp(.76rem, .92vw, .86rem);
+  line-height: 1.42;
+  text-shadow: 0 2px 12px rgba(0,0,0,.85);
+}
+@media (hover: hover) and (min-width: 701px) {
+  .sec-services .wwd-flip:hover .wwd-flip-front::after,
+  .sec-services .wwd-flip:focus-visible .wwd-flip-front::after { clip-path: inset(0); }
+  .sec-services .wwd-flip:hover .wwd-flip-caption,
+  .sec-services .wwd-flip:focus-visible .wwd-flip-caption {
+    opacity: 0;
+    transform: translateY(10px);
+    transition-delay: 0s;
+  }
+  .sec-services .wwd-flip:hover .wwd-flip-back,
+  .sec-services .wwd-flip:focus-visible .wwd-flip-back { opacity: 1; transform: none; }
+  .sec-services .wwd-flip:hover .wwd-media [data-service-image],
+  .sec-services .wwd-flip:focus-visible .wwd-media [data-service-image] { transform: scale(1.025); }
+}
+@media (max-width: 700px) {
+  .sec-services .wwd-flip { aspect-ratio: 4 / 3; }
+  .sec-services .wwd-flip-caption {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 54px;
+    opacity: 1;
+    transform: none;
+    padding: 0 16px;
+  }
+  .sec-services .wwd-flip-back { opacity: 1; transform: none; }
+  .sec-services .wwd-flip-front::after { clip-path: inset(0); }
+  .sec-services .wwd-flip-back { padding: 16px; }
+  .sec-services .wwd-flip-back .wwd-copy {
+    right: 16px;
+    bottom: 72px;
+    left: 16px;
+    max-width: 40ch;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .sec-services .wwd-flip-caption { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec-services .wwd-flip-front::after,
+  .sec-services .wwd-flip-caption,
+  .sec-services .wwd-flip-back,
+  .sec-services .wwd-media [data-service-image] { transition: none !important; }
 }
