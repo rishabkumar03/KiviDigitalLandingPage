@@ -7,7 +7,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   initIntro();
   initNavbar();
-  initNavPill();
   initNavDropdowns();
   initFlipCards();
   initMobileMenu();
@@ -130,47 +129,6 @@ function initMobileMenu() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && panel.classList.contains("is-open")) close(true);
   });
-}
-
-function initNavPill() {
-  const links = document.querySelectorAll('[data-nav-link]');
-  const pill = document.querySelector('[data-nav-pill]');
-  const container = document.querySelector('[data-nav-links]');
-  if (!links.length || !pill || !container || prefersReducedMotion()) return;
-
-  const stiffness = 350, damping = 26, mass = 1;
-  let current = { x: 0, w: 0 }, target = { x: 0, w: 0 }, vel = { x: 0, w: 0 };
-  let rafId = null;
-
-  function step(cur, tgt, v, dt) {
-    const accel = (-stiffness * (cur - tgt) - damping * v) / mass;
-    v += accel * dt;
-    cur += v * dt;
-    return [cur, v];
-  }
-
-  function tick() {
-    const dt = 1 / 60;
-    [current.x, vel.x] = step(current.x, target.x, vel.x, dt);
-    [current.w, vel.w] = step(current.w, target.w, vel.w, dt);
-    pill.style.transform = `translateX(${current.x}px)`;
-    pill.style.width = `${current.w}px`;
-    const settled = Math.abs(target.x - current.x) < 0.4 && Math.abs(target.w - current.w) < 0.4
-      && Math.abs(vel.x) < 0.4 && Math.abs(vel.w) < 0.4;
-    rafId = settled ? null : requestAnimationFrame(tick);
-  }
-
-  function moveTo(el) {
-    const linkRect = el.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    target.x = linkRect.left - containerRect.left;
-    target.w = linkRect.width;
-    pill.classList.add('is-active');
-    if (!rafId) rafId = requestAnimationFrame(tick);
-  }
-
-  links.forEach((link) => link.addEventListener('mouseenter', () => moveTo(link)));
-  container.addEventListener('mouseleave', () => pill.classList.remove('is-active'));
 }
 
 /* =========================================================

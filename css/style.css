@@ -135,23 +135,6 @@ body.lightbox-locked { overflow: hidden; }
 }
 .nav-links { display: flex; align-items: center; gap: 34px; position: relative; }
 .nav-links a { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; position: relative; z-index: 1; }
-.nav-pill {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  height: calc(100% - 8px);
-  width: 0;
-  border-radius: 100px;
-  background: rgba(179,255,0,.24);
-  border: 1px solid rgba(179,255,0,.5);
-  pointer-events: none;
-  opacity: 0;
-  z-index: 0;
-}
-.nav-pill.is-active { opacity: 1; }
-@media (prefers-reduced-motion: reduce) {
-  .nav-pill { transition: none; }
-}
 .hover-anim { position: relative; display: inline-block; overflow: hidden; height: 1.1em; vertical-align: top; }
 .hover-anim span { display: block; transition: transform 380ms var(--ease); }
 .hover-anim::after {
